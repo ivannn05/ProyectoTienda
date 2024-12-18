@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bonsai Sur</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #F3F0E5; /* Color de fondo */
+        }
+        .navbar {
+            background-color: #5B3E34; /* Marrón */
+        }
+        .navbar-brand img {
+            width: 60px;
+        }
+        .navbar-nav .nav-link {
+            color: #C4D1AA; /* Verde claro */
+        }
+        .navbar-nav .nav-link:hover {
+            color: #fff;
+        }
+        .icono {
+            color: #C4D1AA;
+            font-size: 1.5rem;
+        }
+        .icono:hover {
+            color: #fff;
+        }
+        .content-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr; /* Tres columnas iguales */
+            gap: 15px; /* Espacio entre las imágenes */
+            padding: 20px;
+        }
+        .content-block img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Asegura que las imágenes cubran el espacio */
+            border-radius: 8px; /* Bordes redondeados */
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <!-- Logo -->
+            <a class="navbar-brand" href="#">
+                <img src="imagenes/LogoTienda.jpg" alt="Logo Bonsai Sur">
+                BONSAI SUR
+            </a>
+            <!-- Botón hamburguesa -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Menú -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">INICIO</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="arbolesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">ARBOLES</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Bonsáis</a></li>
+                            <li><a class="dropdown-item" href="#">Prebonsáis</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="macetasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">MACETAS</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Cerámica</a></li>
+                            <li><a class="dropdown-item" href="#">Plástico</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="abonosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">ABONOS</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Orgánicos</a></li>
+                            <li><a class="dropdown-item" href="#">Químicos</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="herramientasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">HERRAMIENTAS</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Corte</a></li>
+                            <li><a class="dropdown-item" href="#">Mantenimiento</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Barra de búsqueda -->
+                <form class="d-flex me-3">
+                    <input class="form-control me-2" type="search" placeholder="Buscar..." aria-label="Search">
+                    <button class="btn btn-outline-light" type="submit"><i class="bi bi-search"></i></button>
+                </form>
+                <!-- Íconos -->
+                <a href="#" class="me-3 icono"><i class="bi bi-cart"></i></a>
+                <a href="#" class="icono"><i class="bi bi-person"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Bloque de Contenido -->
+    <div class="container my-4">
+        <div class="content-block">
+            <!-- Imagen 1 -->
+            <div>
+                <img src="imagenes/Bogambilla.jpg" alt="Bonsái 1">
+            </div>
+            <!-- Imagen 2 -->
+            <div>
+                <img src="imagenes/Abono.jpg" alt="Bonsái 2">
+            </div>
+            <!-- Imagen 3 -->
+            <div>
+                <img src="imagenes/Macetas.jpg" alt="Bonsái 3">
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
