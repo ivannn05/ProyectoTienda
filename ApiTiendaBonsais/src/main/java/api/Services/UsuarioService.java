@@ -64,6 +64,7 @@ public class UsuarioService {
 	    usuario.setDireccion(usuarioDetails.getDireccion());
 	    usuario.setContrasena(usuarioDetails.getContrasena());
 	    usuario.setFechaRegistro(usuarioDetails.getFechaRegistro());
+	    usuario.setRol(usuarioDetails.getRol());
 
 	    // Guardar los cambios en la base de datos
 	    return usuarioRepository.save(usuario);

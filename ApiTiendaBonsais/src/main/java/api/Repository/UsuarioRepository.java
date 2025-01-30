@@ -9,9 +9,9 @@ import api.Daos.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    // Encuentra un usuario por correo y contraseña
-	
-	 Optional<Usuario> findByCorreoAndContrasena(String correo, String
-	 contrasena); Optional<Usuario> findByCorreo(String correo);
-	 
+	// Encuentra un usuario por correo y contraseña
+
+	Optional<Usuario> findByCorreoAndContrasena(String correo, String contrasena);
+	Optional<Usuario> findByCorreo(String correo);
+
 }
