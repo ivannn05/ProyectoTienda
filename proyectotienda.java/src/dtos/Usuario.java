@@ -9,17 +9,22 @@ public class Usuario {
     private String apellidos;
     private String correo;
     private String direccion;
-    private String contrasena; 
+	private String telefono;
+    private String contrasena;
     private Timestamp fechaRegistro;
     private String rol;
+    private String token; // Nuevo campo para el token
+    private Timestamp fechaToken; // Nuevo campo para la fecha de caducidad del token
 
     // Constructor vacío
     public Usuario() {
     }
 
-    // Constructor con parámetros
-    public Usuario(Long id, String nombre, String apellidos, String correo, String direccion, String contrasena, Timestamp fechaRegistro, String rol) {
+    // Constructor con parámetros, incluyendo los nuevos campos token y fechaToken
+    public Usuario(Long id, String nombre, String apellidos, String correo,String telefono, String direccion, String contrasena,
+                   Timestamp fechaRegistro, String rol, String token, Timestamp fechaToken) {
         this.id = id;
+        this.telefono = telefono;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.correo = correo;
@@ -27,6 +32,8 @@ public class Usuario {
         this.contrasena = contrasena;
         this.fechaRegistro = fechaRegistro;
         this.rol = rol;
+        this.token = token;
+        this.fechaToken = fechaToken;
     }
 
     // Getters y Setters
@@ -45,6 +52,13 @@ public class Usuario {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+    public String getTelefono() {
+  		return telefono;
+  	}
+
+  	public void setTelefono(String telefono) {
+  		this.telefono = telefono;
+  	}
 
     public String getApellidos() {
         return apellidos;
@@ -71,7 +85,7 @@ public class Usuario {
     }
 
     public String getContrasena() {
-        return contrasena; 
+        return contrasena;
     }
 
     public void setContrasena(String contrasena) {
@@ -94,6 +108,21 @@ public class Usuario {
         this.rol = rol;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public Timestamp getFechaToken() {
+        return fechaToken;
+    }
+
+    public void setFechaToken(Timestamp fechaToken) {
+        this.fechaToken = fechaToken;
+    }
 
     @Override
     public String toString() {
@@ -103,9 +132,12 @@ public class Usuario {
                 ", apellidos='" + apellidos + '\'' +
                 ", correo='" + correo + '\'' +
                 ", direccion='" + direccion + '\'' +
-                ", contrasena='" + contrasena + '\'' + 
+                 ", telefono='" + telefono + '\'' +
+                ", contrasena='" + contrasena + '\'' +
                 ", fechaRegistro=" + fechaRegistro +
                 ", rol='" + rol + '\'' +
+                ", token='" + token + '\'' + // Mostrar el token
+                ", fechaToken=" + fechaToken +
                 '}';
     }
 }

@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import dtos.Usuario;
 import servicios.Menus;
+import util.Utilidades;
 import servicios.CrudUsuario;
 
 public class Inicio {
@@ -17,10 +18,12 @@ public class Inicio {
 		CrudUsuario cu = new CrudUsuario();
 		MetodosHTTP mHttp = new MetodosHTTP();
 		// fi.cargaDeFichero();
-		Scanner sc=new Scanner(System.in);
-		int opc;
+		Scanner sc = new Scanner(System.in);
+
 		boolean cerraMenu = false;
 		while (!cerraMenu) {
+			int opc;
+			int opc1;
 			opc = mi.mostrarMenuInicial();
 
 			try {
@@ -36,20 +39,50 @@ public class Inicio {
 					System.out.println("########################################");
 					break;
 
-			
 				case 2:
 					System.out.println("Selecciono Actualizar Usuario");
 					System.out.println("Escriba el correo de la persona paraa actualizar");
-					
-					String correo=sc.next();
+
+					String correo = sc.next();
 					mHttp.Put(correo);
 					System.out.println("########################################");
 					break;
 				case 3:
 					System.out.println("Selecciono Eliminar Usuario");
-					
+
 					mHttp.Delete();
 					System.out.println("########################################");
+					break;
+
+				case 4:
+					System.out.println("Selecciono Login de  Usuario");
+					boolean cerraMenu1 = false;
+					while (!cerraMenu1) {
+						opc1 = mi.mostrarMenuLogin();
+
+						switch (opc1) {
+						case 0:
+							System.out.println("Se cerrara el menu");
+							// fi.ficheroLog("Se cerrara el menu");
+							cerraMenu1 = true;
+							break;
+						case 1:
+							System.out.println("Selecciono Login");
+							mHttp.Login();
+							break;
+						case 2:
+							System.out.println("Selecciono Olvido Contraseña");
+							System.out.println("\tEscriba el correo ");
+							String correo1 = sc.next();
+							mHttp.UpdateContrasena(correo1);
+							break;
+
+						default:
+							break;
+						}
+
+						System.out.println("########################################");
+					}
 					break;
 
 				default:
@@ -59,6 +92,7 @@ public class Inicio {
 				}
 			} catch (Exception e) {
 				System.out.println("Ocurrio un error en la aplicacion");
+				Utilidades.ficheroLog(null, null);
 				// fi.ficheroLog("Ocurrio un error en la aplicacion");
 			}
 		}

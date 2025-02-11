@@ -14,9 +14,18 @@ public class Menus {
 		System.out.println("1.Registro de Usuario");
 		System.out.println("2.Actualizar Usuario");
 		System.out.println("3.Eliminar Usuario");
+		System.out.println("4.Login de Usuario");
 		opc=sc.nextInt();
 		return opc;
 		
+	}
+	public int mostrarMenuLogin() {
+		int opc;
+		System.out.println("0.Para Salir");
+		System.out.println("1.Para login");
+		System.out.println("2.¿Olvidaste contraseña?");
+		opc=sc.nextInt();
+		return opc;
 	}
 	
 }

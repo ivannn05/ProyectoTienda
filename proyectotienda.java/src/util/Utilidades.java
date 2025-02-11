@@ -1,8 +1,14 @@
 package util;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import controladores.Inicio;
+import dtos.Usuario;
 
 public class Utilidades {
 	
@@ -27,6 +33,19 @@ public class Utilidades {
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
 				return null;
+			}
+		}
+		public static void ficheroLog(String mensaje,Usuario usu) {
+			try {
+		  String rutaCompletaLog = "C:\\Users\\ivan\\Desktop\\workspaceProyectoDWS\\proyectotienda.java\\logs".concat("\\").concat("log-").concat(usu.getCorreo()).concat(".txt");
+				BufferedWriter escribe = new BufferedWriter(new FileWriter(rutaCompletaLog, true));
+
+				escribe.write(mensaje.concat("\n"));
+
+				escribe.close();
+			} catch (IOException e1) {
+
+				System.out.println("Hubo un error en el fichero log  Error:001");
 			}
 		}
 
