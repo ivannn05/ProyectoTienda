@@ -71,11 +71,11 @@ public class MetodosHTTP {
 
 				if (usuario != null) {
 					// Pedir nueva contraseña al usuario
-					usuario = cu.cambiarContrasena( correo); // Se encarga de actualizar la contraseña
+					usuario = cu.cambiarContrasena(correo); // Se encarga de actualizar la contraseña
 
 					// Enviar la solicitud PUT para actualizar la contraseña
 					String json = objectMapper.writeValueAsString(usuario);
-					
+
 					HttpRequest request = HttpRequest.newBuilder().uri(URI.create(API_URL_UPDATE_PASSWORD))
 							.header("Content-Type", "application/json").PUT(HttpRequest.BodyPublishers.ofString(json))
 							.build();
@@ -123,6 +123,7 @@ public class MetodosHTTP {
 
 					// 3. Enviar la solicitud PUT con el usuario actualizado
 					String json = objectMapper.writeValueAsString(usuario);
+
 					HttpRequest request = HttpRequest.newBuilder().uri(URI.create(API_URL))
 							.header("Content-Type", "application/json").PUT(HttpRequest.BodyPublishers.ofString(json))
 							.build();
@@ -141,45 +142,70 @@ public class MetodosHTTP {
 		}
 	}
 
-	public void Login() {
+	public String Login() {
+		String res="";
 		try {
 			HttpClient client = HttpClient.newHttpClient();
 			ObjectMapper objectMapper = new ObjectMapper();
 			String API_URL_LOGIN = "http://localhost:8081/api/usuarios/login"; // Endpoint para el login
+			String API_URL_SELECT = "http://localhost:8081/api/usuarios/todos"; // Endpoint para obtener todos los
+			// usuarios
 
-			Usuario usu = cu.loginUsu();
-			// Crear un objeto Map con los datos de login
-			Map<String, String> loginData = new HashMap<>();
-			loginData.put("correo", usu.getCorreo());
-			loginData.put("contrasena", usu.getContrasena());
+// 1. Obtener la lista actualizada de usuarios desde la API
+			HttpRequest requestUsu = HttpRequest.newBuilder().uri(URI.create(API_URL_SELECT))
+					.header("Accept", "application/json").GET().build();
 
-			// Convertir el objeto a JSON
-			String json = objectMapper.writeValueAsString(loginData);
+			HttpResponse<String> responseUsu = client.send(requestUsu, HttpResponse.BodyHandlers.ofString());
 
-			// Construir la solicitud POST para el login
-			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(API_URL_LOGIN))
-					.header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(json)) // Enviar
-																												// los
-																												// datos
-																												// de
-																												// login
-																												// en el
-																												// cuerpo
-					.build();
+			if (responseUsu.statusCode() == 200) {
+// Convertir la respuesta JSON a lista de usuarios
+				List<Usuario> usuarios = objectMapper.readValue(responseUsu.body(), new TypeReference<List<Usuario>>() {
+				});
+				Inicio.listaUsuarios = usuarios; // Actualizar la lista local
+				
+				Usuario usu = cu.loginUsu();
+				boolean comprobacion=false;
+				for (Usuario Aux : Inicio.listaUsuarios) {
+					if (Aux.getCorreo().equals(usu.getCorreo()) && Aux.getContrasena().equals(usu.getContrasena())) {
+						Inicio.UsuarioLogeado = Aux;
+						comprobacion=true;
+						if (comprobacion==false) {
+							System.out.println("No se encontro en la lista");
+						}
+					}
+				}
+				
+				// Crear un objeto Map con los datos de login
+				Map<String, String> loginData = new HashMap<>();
+				loginData.put("correo", usu.getCorreo());
+				loginData.put("contrasena", usu.getContrasena());
 
-			// Enviar la solicitud
-			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+				// Convertir el objeto a JSON
+				String json = objectMapper.writeValueAsString(loginData);
 
-			// Imprimir la respuesta
-			if (response.statusCode() == 200) {
-				System.out.println("Login exitoso: " + response.body());
-			} else {
-				System.out.println("Error en el login: " + response.body());
+				// Construir la solicitud POST para el login
+				HttpRequest request = HttpRequest.newBuilder().uri(URI.create(API_URL_LOGIN))
+						.header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(json))
+						// Enviar los datos de login en el cuerpo
+						.build();
+
+				// Enviar la solicitud
+				HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+				// Imprimir la respuesta
+				if (response.statusCode() == 200) {
+					System.out.println("Login exitoso: " + response.body());
+				} else {
+					System.out.println("Error en el login: " + response.body());
+				}
+				res = response.body();
+
 			}
-
 		} catch (Exception e) {
 			System.out.println("Ocurrio un error en Login");
+			res = "Ocurrio un error en Login";
 		}
+		return res;
 	}
 
 	public void Delete() {

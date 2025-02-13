@@ -9,20 +9,21 @@ public class Usuario {
     private String apellidos;
     private String correo;
     private String direccion;
-	private String telefono;
+    private String telefono;  // Nuevo campo para teléfono
     private String contrasena;
     private Timestamp fechaRegistro;
     private String rol;
     private String token; // Nuevo campo para el token
     private Timestamp fechaToken; // Nuevo campo para la fecha de caducidad del token
+    private byte[] fotoUsu; // Nuevo campo para la foto de usuario
 
     // Constructor vacío
     public Usuario() {
     }
 
-    // Constructor con parámetros, incluyendo los nuevos campos token y fechaToken
-    public Usuario(Long id, String nombre, String apellidos, String correo,String telefono, String direccion, String contrasena,
-                   Timestamp fechaRegistro, String rol, String token, Timestamp fechaToken) {
+    // Constructor con parámetros, incluyendo los nuevos campos telefono, fotoUsu, token y fechaToken
+    public Usuario(Long id, String nombre, String apellidos, String correo, String telefono, String direccion, 
+                   String contrasena, Timestamp fechaRegistro, String rol, String token, Timestamp fechaToken, byte[] fotoUsu) {
         this.id = id;
         this.telefono = telefono;
         this.nombre = nombre;
@@ -34,6 +35,7 @@ public class Usuario {
         this.rol = rol;
         this.token = token;
         this.fechaToken = fechaToken;
+        this.fotoUsu = fotoUsu;
     }
 
     // Getters y Setters
@@ -52,13 +54,14 @@ public class Usuario {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    public String getTelefono() {
-  		return telefono;
-  	}
 
-  	public void setTelefono(String telefono) {
-  		this.telefono = telefono;
-  	}
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
 
     public String getApellidos() {
         return apellidos;
@@ -124,6 +127,14 @@ public class Usuario {
         this.fechaToken = fechaToken;
     }
 
+    public byte[] getFotoUsu() {
+        return fotoUsu;
+    }
+
+    public void setFotoUsu(byte[] fotoUsu) {
+        this.fotoUsu = fotoUsu;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +
@@ -132,12 +143,13 @@ public class Usuario {
                 ", apellidos='" + apellidos + '\'' +
                 ", correo='" + correo + '\'' +
                 ", direccion='" + direccion + '\'' +
-                 ", telefono='" + telefono + '\'' +
+                ", telefono='" + telefono + '\'' +
                 ", contrasena='" + contrasena + '\'' +
                 ", fechaRegistro=" + fechaRegistro +
                 ", rol='" + rol + '\'' +
                 ", token='" + token + '\'' + // Mostrar el token
                 ", fechaToken=" + fechaToken +
+                ", fotoUsu=" + (fotoUsu != null ? fotoUsu.length : 0) + " bytes" + // Mostrar el tamaño de la foto
                 '}';
     }
 }

@@ -1,9 +1,10 @@
 package servicios;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.UUID;
@@ -25,6 +26,16 @@ public class CrudUsuario {
 	Utilidades util = new Utilidades();
 	@Autowired
    
+	//Metodo para comprobar Roles de usuarios 
+	public String comprobarRoles() {
+	String rol=Inicio.UsuarioLogeado.getRol();
+	//Usuario o Administrador
+	if (rol.equals("Usuario")) {
+		
+	}
+		
+		return "";
+	};
 
     // Método para cambiar la contraseña de un usuario
     public Usuario cambiarContrasena(String correo) {
@@ -180,21 +191,19 @@ public class CrudUsuario {
 	}
 
 	public Usuario loginUsu() {
-		Usuario usuario = new Usuario();
-		String correo, contrasena;
-		System.out.println("Escriba el correo del usuario  ");
-		correo = sc.next();
-		System.out.println("Escriba la contraseña del usuario  ");
-		contrasena = sc.next();
-		String contrasenaEncripatada = util.encriptarContraseña(contrasena);
-		for (Usuario u : Inicio.listaUsuarios) {
-			if (u.getCorreo().equalsIgnoreCase(correo) && u.getContrasena().equalsIgnoreCase(contrasenaEncripatada)) {
-				usuario = u;
-				break;
-			}
-		}
-		return usuario;
+	    Scanner sc = new Scanner(System.in);
+	    System.out.println("Escriba el correo del usuario:");
+	    String correo = sc.next();
+	    System.out.println("Escriba la contraseña del usuario:");
+	    String contrasena = sc.next();
+
+	    Usuario usuario = new Usuario();
+	    usuario.setCorreo(correo);
+	    usuario.setContrasena(Utilidades.encriptarContraseña(contrasena) ); // Sin encriptar, la API se encargará
+
+	    return usuario;
 	}
+
 
 	public Usuario eliminarUsu() {
 		Usuario usuario = new Usuario();
@@ -253,6 +262,7 @@ public class CrudUsuario {
 				System.out.println("5. Contraseña");
 				System.out.println("6. Telefono");
 				System.out.println("7. Rol");
+				System.out.println("8. Foto Usu");
 				System.out.print("Opción: ");
 				int opcion = sc.nextInt();
 
@@ -293,7 +303,7 @@ public class CrudUsuario {
 					break;
 				case 6:
 					System.out.println("Escriba su telefono:");
-					usuario.setTelefono(sc.nextLine());
+					usuario.setTelefono(sc.next());
 
 					break;
 				case 7:
@@ -312,6 +322,23 @@ public class CrudUsuario {
 						System.out.println("Entrada no válida. Por favor, escriba 'Usuario' o 'Administrador'.");
 					}
 					usuario.setRol(rol);
+					break;
+				case 8:
+					/*
+					  System.out.println("Escriba su ruta de la foto:"); String rutaFoto =
+					 * sc.nextLine(); // Leer la ruta completa de la foto
+					 * 
+					 * // Convertir el archivo en un array de bytes try { File archivo = new
+					 * File(rutaFoto); FileInputStream fis = new FileInputStream(archivo); byte[]
+					 * fotoBytes = new byte[(int) archivo.length()]; // Crear un array de bytes con
+					 * el tamaño del archivo fis.read(fotoBytes); // Leer el archivo y almacenarlo
+					 * en el array de bytes fis.close(); // Cerrar el flujo de entrada
+					 * 
+					 * // Establecer la foto en el objeto usuario usuario.setFotoUsu(fotoBytes);
+					 * 
+					 * System.out.println("Foto cargada correctamente."); } catch (IOException e) {
+					 * System.out.println("Error al cargar la foto: " + e.getMessage()); }
+					 */
 					break;
 
 				default:
