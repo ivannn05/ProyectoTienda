@@ -68,7 +68,7 @@
                 </form>
                 <!-- Íconos -->
                 <a href="<%= request.getContextPath() %>/carrito.jsp" class="me-3 icono"><i class="bi bi-cart"></i></a>
-                <a href="<%= request.getContextPath() %>/login.jsp" class="icono"><i class="bi bi-person"></i></a>
+                <a href="<%= request.getContextPath() %>/loginUsu.jsp" class="icono"><i class="bi bi-person"></i></a>
             </div>
         </div>
     </nav>

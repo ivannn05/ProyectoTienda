@@ -100,7 +100,7 @@
 
 	<!-- Bloque de Contenido -->
 	<div class="container my-4">
-		<h2 class="text-center mb-4">Acceso a tu Administración</h2>
+		<h2 class="text-center mb-4">Acceso a tu Cuenta</h2>
 		        <!-- Pestañas para alternar entre Login, Registro, Actualización y Eliminación -->
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
@@ -112,9 +112,7 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="update-tab" data-bs-toggle="tab" data-bs-target="#update" type="button" role="tab" aria-controls="update" aria-selected="false">Actualizar Usuario</button>
             </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="eliminar-tab" data-bs-toggle="tab" data-bs-target="#eliminar" type="button" role="tab" aria-controls="eliminar" aria-selected="false">Eliminar Usuario</button>
-            </li>
+         
         </ul>
 
 
@@ -215,52 +213,7 @@
                 </form>
             </div>
 
-			<!-- Formulario de Eliminar Usuario -->
-			<div class="tab-pane fade" id="eliminar" role="tabpanel"
-				aria-labelledby="eliminar-tab">
-				<form action="<%=request.getContextPath()%>/eliminar" method="POST">
-					<input type="hidden" name="_method" value="DELETE">
-					<div class="mb-3">
-						<label for="correoEliminar" class="form-label">Correo
-							Electrónico</label> <input type="email" class="form-control"
-							name="correo" id="correoEliminar"
-							placeholder="Introduce el correo electrónico" required>
-					</div>
-					<div class="mb-3">
-						<label for="contrasenaEliminar" class="form-label">Contraseña</label>
-						<input type="password" class="form-control" name="contrasena"
-							id="contrasenaEliminar"
-							placeholder="Introduce tu contraseña para confirmar" required>
-					</div>
-					<div class="mb-3">
-						<label for="confirmarContrasenaEliminar" class="form-label">Confirmar
-							Contraseña</label> <input type="password" class="form-control"
-							name="confirmarContrasena" id="confirmarContrasenaEliminar"
-							placeholder="Confirma tu contraseña" required>
-					</div>
-					<button type="submit" class="btn btn-danger w-100">Eliminar
-						Usuario</button>
-				</form>
-
-			</div>
-			<!-- Script de validación para la confirmación de contraseña -->
-			<script>
-				document
-						.getElementById("form_eliminar")
-						.addEventListener(
-								"submit",
-								function(event) {
-									var contrasena = document
-											.getElementById("contrasenaEliminar").value;
-									var confirmarContrasena = document
-											.getElementById("confirmarContrasenaEliminar").value;
-
-									if (contrasena !== confirmarContrasena) {
-										event.preventDefault(); // Detiene el envío del formulario
-										alert("Las contraseñas no coinciden. Por favor, verifica e inténtalo de nuevo.");
-									}
-								});
-			</script>
+			
 		</div>
 
 	</div>

@@ -69,7 +69,7 @@
                 </form>
                 <!-- Íconos -->
                 <a href="carrito.jsp" class="me-3 icono"><i class="bi bi-cart"></i></a>
-                <a href="login.jsp" class="icono"><i class="bi bi-person"></i></a>
+                <a href="loginUsu.jsp" class="icono"><i class="bi bi-person"></i></a>
             </div>
         </div>
     </nav>
