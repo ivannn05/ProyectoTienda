@@ -65,6 +65,10 @@ public class UsuarioService {
 	    usuario.setContrasena(usuarioDetails.getContrasena());
 	    usuario.setFechaRegistro(usuarioDetails.getFechaRegistro());
 	    usuario.setRol(usuarioDetails.getRol());
+	    usuario.setToken(usuarioDetails.getToken());
+	    usuario.setFechaToken(usuarioDetails.getFechaToken());
+	    usuario.setTelefono(usuarioDetails.getTelefono());
+	    usuario.setFotoUsu(usuarioDetails.getFotoUsu());
 
 	    // Guardar los cambios en la base de datos
 	    return usuarioRepository.save(usuario);
@@ -81,5 +85,7 @@ public class UsuarioService {
 		}
 		return null;
 	}
+	
+
 
 }

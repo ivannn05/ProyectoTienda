@@ -1,6 +1,8 @@
 package api.Controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,11 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import api.Daos.Usuario;
 import api.Services.UsuarioService;
+import send.email.template.EmailTemplate;
 
 @RestController // Asegúrate de que esta anotación esté presente
 @RequestMapping("/api/usuarios") // Define la ruta base para este controlador
@@ -87,6 +90,7 @@ public class UsuarioController {
                 return new ResponseEntity<>("Error inesperado", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
 
     // Ruta POST para crear un usuario
   
@@ -113,4 +117,7 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+ 
+ 	
+    
 }

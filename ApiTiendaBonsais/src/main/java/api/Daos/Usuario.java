@@ -1,7 +1,13 @@
 package api.Daos;
 
 import java.sql.Timestamp;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "usuarios", schema = "tiendabonsai") // Asegúrate de que coincide con el esquema y nombre exacto
@@ -33,19 +39,36 @@ public class Usuario {
     @Column(name = "rol", length = 50, nullable = false)
     private String rol; // Nueva columna rol
 
+    @Column(name = "token", length = 255) // Columna para el token (VARCHAR)
+    private String token;
+
+    @Column(name = "fecha_token") // Columna para la fecha del token (TIMESTAMP)
+    private Timestamp fechaToken;
+
+    @Column(name = "telefono", length = 15) // Columna para el teléfono (VARCHAR)
+    private String telefono;
+
+    @Column(name = "foto_usu") // Columna para la foto de usuario (BYTEA)
+    private byte[] fotoUsu;
+
     // Constructor vacío requerido por JPA
     public Usuario() {
     }
 
-    // Constructor con parámetros (incluyendo el nuevo parámetro rol)
-    public Usuario(String nombre, String apellidos, String correo, String direccion, String contrasena, Timestamp fechaRegistro, String rol) {
+    // Constructor con parámetros (incluyendo los nuevos campos)
+    public Usuario(String nombre, String apellidos, String correo, String direccion, String contrasena, 
+                   Timestamp fechaRegistro, String rol, String token, Timestamp fechaToken, String telefono, byte[] fotoUsu) {
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.correo = correo;
         this.direccion = direccion;
         this.contrasena = contrasena;
         this.fechaRegistro = fechaRegistro;
-        this.rol = rol; // Inicializar el nuevo campo
+        this.rol = rol;
+        this.token = token; // Inicializar el campo token
+        this.fechaToken = fechaToken; // Inicializar el campo fecha_token
+        this.telefono = telefono; // Inicializar el campo telefono
+        this.fotoUsu = fotoUsu; // Inicializar el campo fotoUsu
     }
 
     // Getters y Setters
@@ -113,6 +136,38 @@ public class Usuario {
         this.rol = rol;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public Timestamp getFechaToken() {
+        return fechaToken;
+    }
+
+    public void setFechaToken(Timestamp fechaToken) {
+        this.fechaToken = fechaToken;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public byte[] getFotoUsu() {
+        return fotoUsu;
+    }
+
+    public void setFotoUsu(byte[] fotoUsu) {
+        this.fotoUsu = fotoUsu;
+    }
+
     // Método toString (opcional)
     @Override
     public String toString() {
@@ -124,7 +179,11 @@ public class Usuario {
                 ", direccion='" + direccion + '\'' +
                 ", contrasena='" + contrasena + '\'' +
                 ", fechaRegistro=" + fechaRegistro +
-                ", rol='" + rol + '\'' + // Mostrar también el rol
+                ", rol='" + rol + '\'' +
+                ", token='" + token + '\'' + // Mostrar el token
+                ", fechaToken=" + fechaToken +
+                ", telefono='" + telefono + '\'' + // Mostrar el teléfono
+                ", fotoUsu=" + (fotoUsu != null ? fotoUsu.length : 0) + " bytes" + // Mostrar el tamaño de la foto
                 '}';
     }
 }
