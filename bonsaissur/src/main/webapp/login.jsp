@@ -1,3 +1,4 @@
+<%@page import="tienda.bonsaissur.dtos.Usuario"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -91,9 +92,22 @@
 				</form>
 				<!-- Íconos -->
 				<a href="<%=request.getContextPath()%>/carrito.jsp"
-					class="me-3 icono"><i class="bi bi-cart"></i></a> <a
+					class="me-3 icono"><i class="bi bi-cart"></i></a> 
+					<a
 					href="<%=request.getContextPath()%>/login.jsp" class="icono"><i
 					class="bi bi-person"></i></a>
+					
+					<!-- Ícono cerrar sesión -->
+					<%
+    Usuario usuario = (Usuario) session.getAttribute("Usuario");
+    if (usuario != null) {
+%>
+    <form action="<%=request.getContextPath()%>/cerrarSesion" method="post">
+        <button type="submit" class="btn btn-danger">Cerrar Sesión</button>
+    </form>
+<%
+    }
+%>
 			</div>
 		</div>
 	</nav>
@@ -112,9 +126,20 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="update-tab" data-bs-toggle="tab" data-bs-target="#update" type="button" role="tab" aria-controls="update" aria-selected="false">Actualizar Usuario</button>
             </li>
+            <%
+ 
+    if (usuario!=null) {
+%>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="eliminar-tab" data-bs-toggle="tab" data-bs-target="#eliminar" type="button" role="tab" aria-controls="eliminar" aria-selected="false">Eliminar Usuario</button>
             </li>
+            			<%
+    } else {
+%>
+    
+<%
+    }
+%>
         </ul>
 
 
@@ -199,10 +224,10 @@
                         <label for="apellidosUpdate" class="form-label">Apellidos</label>
                         <input type="text" class="form-control" id="apellidosUpdate" name="apellidos" placeholder="Introduce tus apellidos" required>
                     </div>
-                    <div class="mb-3">
+                   <!--  <div class="mb-3">
                         <label for="correoUpdate" class="form-label">Correo Electrónico</label>
                         <input type="email" class="form-control" id="correoUpdate" name="correo" placeholder="Introduce tu correo electrónico" required>
-                    </div>
+                    </div> -->
                     <div class="mb-3">
                         <label for="direccionUpdate" class="form-label">Dirección</label>
                         <input type="text" class="form-control" id="direccionUpdate" name="direccion" placeholder="Introduce tu dirección" required>
@@ -214,7 +239,13 @@
                     <button type="submit" class="btn btn-warning w-100">Actualizar Usuario</button>
                 </form>
             </div>
+<%
+  
+    if (usuario!=null) {
+%>
 
+        
+        
 			<!-- Formulario de Eliminar Usuario -->
 			<div class="tab-pane fade" id="eliminar" role="tabpanel"
 				aria-labelledby="eliminar-tab">
@@ -243,6 +274,14 @@
 				</form>
 
 			</div>
+  
+			<%
+    } else {
+%>
+    
+<%
+    }
+%>
 			<!-- Script de validación para la confirmación de contraseña -->
 			<script>
 				document

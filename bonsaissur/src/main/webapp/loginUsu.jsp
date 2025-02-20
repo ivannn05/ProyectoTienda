@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@ page import="tienda.bonsaissur.dtos.Usuario" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -94,6 +95,17 @@
 					class="me-3 icono"><i class="bi bi-cart"></i></a> <a
 					href="<%=request.getContextPath()%>/login.jsp" class="icono"><i
 					class="bi bi-person"></i></a>
+					<!-- Ícono cerrar sesión -->
+					<%
+    Usuario usuario = (Usuario) session.getAttribute("Usuario");
+    if (usuario != null) {
+%>
+    <form action="<%=request.getContextPath()%>/cerrarSesion" method="post">
+        <button type="submit" class="btn btn-danger">Cerrar Sesión</button>
+    </form>
+<%
+    }
+%>
 			</div>
 		</div>
 	</nav>
@@ -213,12 +225,12 @@
 						<input type="text" class="form-control" id="apellidosUpdate"
 							name="apellidos" placeholder="Introduce tus apellidos" required>
 					</div>
-					<div class="mb-3">
+					<!-- <div class="mb-3">
 						<label for="correoUpdate" class="form-label">Correo
 							Electrónico</label> <input type="email" class="form-control"
 							id="correoUpdate" name="correo"
 							placeholder="Introduce tu correo electrónico" required>
-					</div>
+					</div> -->
 					<div class="mb-3">
 						<label for="direccionUpdate" class="form-label">Dirección</label>
 						<input type="text" class="form-control" id="direccionUpdate"

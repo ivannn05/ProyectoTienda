@@ -19,28 +19,39 @@ import tienda.bonsaissur.util.util;
 
 public class LoginController {
 
-	private final Services loginService;
+	private final Services service;
 
 	public LoginController(Services loginService) {
-		this.loginService = loginService;
+		this.service = loginService;
+	}
+	@PostMapping("/cerrarSesion")
+	public ResponseEntity<Void> cerrarSesion(HttpSession session){
+		
+		  if (session != null) {
+			  session.invalidate(); // Cierra la sesión
+			  return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build(); // Redirige al index
+	        }else {
+		  return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build(); // Redirige al login
+	    }
+		
 	}
 
 	@PostMapping("/login")
 	public ResponseEntity<Void> login(@RequestParam String correo, @RequestParam String contrasena,
 			HttpSession session) {
-		Usuario usu = loginService.login(correo, util.encriptarContraseña(contrasena));
-		System.out.println("Rol de Persona:" + Services.UsuarioLogeado.getRol());
+		Usuario usu = service.login(correo, util.encriptarContraseña(contrasena));
+		System.out.println("Rol de Persona:" + usu.getRol());
 		if (usu.getNombre()!=null) {
 			if (usu.getRol().equals("Administrador")) {
 				session.setAttribute("Usuario", usu); // Guarda el usuario en la sesión
 				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build();
 			} else {
-				
+				session.setAttribute("Usuario", usu); // Guarda el usuario en la sesión
 				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 			}
 		} else {
 			// Redirige a /login 
-			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build();
+			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/loginUsu.jsp")).build();
 
 		}
 	}
@@ -49,7 +60,7 @@ public class LoginController {
 	public ResponseEntity<Void> registro(@RequestParam String nombre, @RequestParam String apellidos,
 			@RequestParam String correo, @RequestParam String contrasena, @RequestParam String direccion,
 			@RequestParam String telefono, @RequestParam String rol, HttpSession session) {
-		String respuesta = loginService.Post(nombre, apellidos, correo, direccion, telefono,
+		String respuesta = service.Post(nombre, apellidos, correo, direccion, telefono,
 				util.encriptarContraseña(contrasena), rol);
 
 		if (respuesta.equals("Registro exitoso")) {
@@ -67,8 +78,8 @@ public class LoginController {
 	@PostMapping("/eliminar")
 	public ResponseEntity<Void> eliminar(@RequestParam String correo, @RequestParam String contrasena,
 			HttpSession session) {
-		String respuesta = loginService.Delete(correo, util.encriptarContraseña(contrasena));
-
+		String respuesta = service.Delete(correo, util.encriptarContraseña(contrasena));
+		
 		if (respuesta.equals("Usuario Eliminado")) {
 		
 			// Redirige a /index // Redirige a la vista principal
@@ -82,9 +93,10 @@ public class LoginController {
 
 	@PostMapping("/actualizar")
 	public ResponseEntity<Void> actualizar(@RequestParam String nombre, @RequestParam String apellidos,
-			@RequestParam String correo, @RequestParam String direccion, @RequestParam String telefono,
+			 @RequestParam String direccion, @RequestParam String telefono,
 			HttpSession session) {
-		String respuesta = loginService.Put(nombre, apellidos, correo, direccion, telefono);
+		 Usuario usuario = (Usuario) session.getAttribute("Usuario");
+		String respuesta = service.Put(nombre, apellidos, usuario.getCorreo(), direccion, telefono);
 
 		if (respuesta.equals("Usuario actualizado")) {
 			
@@ -98,7 +110,7 @@ public class LoginController {
 	}
 	@PostMapping("/correoRecuperar")
 	public ResponseEntity<Void> recuperarContrasena(@RequestParam String correoRecuperar,HttpSession session){
-		String respuesta = loginService.recuperarContrasena( correoRecuperar);
+		String respuesta = service.recuperarContrasena( correoRecuperar);
 		
 		if (respuesta.equals("Correo existente")) {
 			
@@ -112,7 +124,7 @@ public class LoginController {
 	}
 	@PostMapping("/escribirContrasena")
 	public ResponseEntity<Void> escribirContrasena(@RequestParam String contrasena,HttpSession session){
-		String respuesta = loginService.recuperarContrasena( contrasena);
+		String respuesta = service.recuperarContrasena( contrasena);
 		
 		if (respuesta.equals("Correo existente")) {
 		
