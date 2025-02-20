@@ -123,16 +123,16 @@ public class LoginController {
 		}
 	}
 	@PostMapping("/escribirContrasena")
-	public ResponseEntity<Void> escribirContrasena(@RequestParam String contrasena,HttpSession session){
-		String respuesta = service.recuperarContrasena( contrasena);
+	public ResponseEntity<Void> escribirContrasena(@RequestParam String nuevaContrasena,@RequestParam String token,HttpSession session){
+		String respuesta = service.actualizarContrasena( nuevaContrasena,token);
 		
-		if (respuesta.equals("Correo existente")) {
+		if (respuesta.equals("Usuario actualizado")) {
 		
 			// Redirige a /index // Redirige a la vista principal
-			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/nuevaContrasena.jsp")).build();
+			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/loginUsu.jsp")).build();
 		} else {
 			// Redirige a /login con error
-			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build();
+			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 
 		}
 	}

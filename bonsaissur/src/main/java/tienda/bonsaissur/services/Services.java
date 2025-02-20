@@ -6,6 +6,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -383,20 +384,31 @@ public class Services {
 				System.out.println("Total de usuarios cargados:" + listaUsu.size());
 				// 2. Buscar el usuario con el correo proporcionado
 				Usuario usuario = new Usuario();
+				String aux="";
 				for (Usuario usu : usuarios) {
-					if (token.equalsIgnoreCase(usu.getToken())) {
-
-					}
-
+				    if (token.equalsIgnoreCase(usu.getToken())) {
+				        // Convertir Timestamp a LocalDate
+				        LocalDate fechaToken = usu.getFechaToken().toLocalDateTime().toLocalDate();
+				        
+				        // Comparar con la fecha actual
+				        if (fechaToken.isBefore( LocalDate.now())) {
+				            System.out.println("✅ El token es válido.");
+				            aux="El token es válido";
+				            usuario=usu;
+				        } else {
+				            System.out.println("❌ El token ha expirado.");
+				            aux="El token ha expirado";
+				        }
+				    }
 				}
 
 				if (usuario != null) {
-					Usuario usu = UsuarioLogeado;
+					
 					// Actualizar los datos del usuario
-					usu.setContrasena(contrasena);
+					usuario.setContrasena(util.encriptarContraseña(contrasena));
 
 					// 3. Enviar la solicitud PUT con el usuario actualizado
-					String json = objectMapper.writeValueAsString(usu);
+					String json = objectMapper.writeValueAsString(usuario);
 
 					HttpRequest request = HttpRequest.newBuilder().uri(URI.create(API_URL))
 							.header("Content-Type", "application/json").PUT(HttpRequest.BodyPublishers.ofString(json))

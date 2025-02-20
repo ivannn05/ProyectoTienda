@@ -74,7 +74,65 @@
     </nav>
 
     <!-- Bloque de Contenido -->
-    <!-- Productos -->
+    <!-- Productos1 -->
+    <div class="separacion container Ordenadores" id="S2">
+        <div class="row justify-content-evenly">
+            <div class="agrandar col-lg-3 col-md-6 border rounded" type="button">
+                <div class="row">
+                    <img src="imagenes/Macetas.jpg" height="300">
+                </div>
+                <div class="row">
+                    <div align="center">Maceta</div>
+                </div>
+            </div>
+            <div class="agrandar col-lg-3 col-md-6 border rounded" href="#" type="button">
+                <div class="row">
+                    <img src="imagenes/Macetas.jpg" height="300">
+                </div>
+                <div class="row">
+                    <div align="center">Maceta</div>
+                </div>
+            </div>
+            <div class="agrandar col-lg-3 col-md-6 border rounded" href="#" type="button">
+                <div class="row">
+                    <img src="imagenes/Macetas.jpg" height="300">
+                </div>
+                <div class="row">
+                    <div align="center">Maceta</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Productos 2 -->
+    <div class="separacion container Ordenadores" id="S2">
+        <div class="row justify-content-evenly">
+            <div class="agrandar col-lg-3 col-md-6 border rounded" type="button">
+                <div class="row">
+                    <img src="imagenes/Macetas.jpg" height="300">
+                </div>
+                <div class="row">
+                    <div align="center">Maceta</div>
+                </div>
+            </div>
+            <div class="agrandar col-lg-3 col-md-6 border rounded" href="#" type="button">
+                <div class="row">
+                    <img src="imagenes/Macetas.jpg" height="300">
+                </div>
+                <div class="row">
+                    <div align="center">Maceta</div>
+                </div>
+            </div>
+            <div class="agrandar col-lg-3 col-md-6 border rounded" href="#" type="button">
+                <div class="row">
+                    <img src="imagenes/Macetas.jpg" height="300">
+                </div>
+                <div class="row">
+                    <div align="center">Maceta</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Productos 3 -->
     <div class="separacion container Ordenadores" id="S2">
         <div class="row justify-content-evenly">
             <div class="agrandar col-lg-3 col-md-6 border rounded" type="button">
