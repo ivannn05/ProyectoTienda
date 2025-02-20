@@ -101,19 +101,26 @@
 	<!-- Bloque de Contenido -->
 	<div class="container my-4">
 		<h2 class="text-center mb-4">Acceso a tu Cuenta</h2>
-		        <!-- Pestañas para alternar entre Login, Registro, Actualización y Eliminación -->
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="true">Iniciar Sesión</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab" aria-controls="register" aria-selected="false">Registrarse</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="update-tab" data-bs-toggle="tab" data-bs-target="#update" type="button" role="tab" aria-controls="update" aria-selected="false">Actualizar Usuario</button>
-            </li>
-         
-        </ul>
+		<!-- Pestañas para alternar entre Login, Registro, Actualización y Eliminación -->
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" id="login-tab" data-bs-toggle="tab"
+					data-bs-target="#login" type="button" role="tab"
+					aria-controls="login" aria-selected="true">Iniciar Sesión</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="register-tab" data-bs-toggle="tab"
+					data-bs-target="#register" type="button" role="tab"
+					aria-controls="register" aria-selected="false">Registrarse</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="update-tab" data-bs-toggle="tab"
+					data-bs-target="#update" type="button" role="tab"
+					aria-controls="update" aria-selected="false">Actualizar
+					Usuario</button>
+			</li>
+
+		</ul>
 
 
 		<!-- Formulario de Login -->
@@ -137,6 +144,12 @@
 					<button type="submit" class="btn btn-primary w-100">Iniciar
 						Sesión</button>
 				</form>
+				<br>
+				<div class="text-center mt-3">
+					<a href="recuperar.jsp"
+						class="btn btn-link text-decoration-none w-100"> ¿Olvidaste tu
+						contraseña? </a>
+				</div>
 			</div>
 
 			<!-- Formulario de Registro -->
@@ -180,40 +193,48 @@
 						<label for="rolRegistro" class="form-label">Rol</label> <select
 							class="form-control" id="rolRegistro" name="rol" required>
 							<option value="Usuario">Usuario</option>
-							<option value="Administrador">Administrador</option>
 						</select>
 					</div>
 					<button type="submit" class="btn btn-success w-100">Registrarse</button>
 				</form>
 			</div>
-			   <!-- Formulario de Actualización de Usuario -->
-            <div class="tab-pane fade" id="update" role="tabpanel" aria-labelledby="update-tab">
-                <form action="<%=request.getContextPath()%>/actualizar" method="POST">
-                    <div class="mb-3">
-                        <label for="nombreUpdate" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombreUpdate" name="nombre" placeholder="Introduce tu nombre" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="apellidosUpdate" class="form-label">Apellidos</label>
-                        <input type="text" class="form-control" id="apellidosUpdate" name="apellidos" placeholder="Introduce tus apellidos" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="correoUpdate" class="form-label">Correo Electrónico</label>
-                        <input type="email" class="form-control" id="correoUpdate" name="correo" placeholder="Introduce tu correo electrónico" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="direccionUpdate" class="form-label">Dirección</label>
-                        <input type="text" class="form-control" id="direccionUpdate" name="direccion" placeholder="Introduce tu dirección" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="telefonoUpdate" class="form-label">Teléfono</label>
-                        <input type="text" class="form-control" id="telefonoUpdate" name="telefono" placeholder="Introduce tu teléfono" required>
-                    </div>
-                    <button type="submit" class="btn btn-warning w-100">Actualizar Usuario</button>
-                </form>
-            </div>
+			<!-- Formulario de Actualización de Usuario -->
+			<div class="tab-pane fade" id="update" role="tabpanel"
+				aria-labelledby="update-tab">
+				<form action="<%=request.getContextPath()%>/actualizar"
+					method="POST">
+					<div class="mb-3">
+						<label for="nombreUpdate" class="form-label">Nombre</label> <input
+							type="text" class="form-control" id="nombreUpdate" name="nombre"
+							placeholder="Introduce tu nombre" required>
+					</div>
+					<div class="mb-3">
+						<label for="apellidosUpdate" class="form-label">Apellidos</label>
+						<input type="text" class="form-control" id="apellidosUpdate"
+							name="apellidos" placeholder="Introduce tus apellidos" required>
+					</div>
+					<div class="mb-3">
+						<label for="correoUpdate" class="form-label">Correo
+							Electrónico</label> <input type="email" class="form-control"
+							id="correoUpdate" name="correo"
+							placeholder="Introduce tu correo electrónico" required>
+					</div>
+					<div class="mb-3">
+						<label for="direccionUpdate" class="form-label">Dirección</label>
+						<input type="text" class="form-control" id="direccionUpdate"
+							name="direccion" placeholder="Introduce tu dirección" required>
+					</div>
+					<div class="mb-3">
+						<label for="telefonoUpdate" class="form-label">Teléfono</label> <input
+							type="text" class="form-control" id="telefonoUpdate"
+							name="telefono" placeholder="Introduce tu teléfono" required>
+					</div>
+					<button type="submit" class="btn btn-warning w-100">Actualizar
+						Usuario</button>
+				</form>
+			</div>
 
-			
+
 		</div>
 
 	</div>

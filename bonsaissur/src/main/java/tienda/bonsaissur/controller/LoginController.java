@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.servlet.http.HttpSession;
+import tienda.bonsaissur.dtos.Usuario;
 import tienda.bonsaissur.services.Services;
 import tienda.bonsaissur.util.util;
 
@@ -27,14 +28,14 @@ public class LoginController {
 	@PostMapping("/login")
 	public ResponseEntity<Void> login(@RequestParam String correo, @RequestParam String contrasena,
 			HttpSession session) {
-		String respuesta = loginService.login(correo, util.encriptarContraseña(contrasena));
+		Usuario usu = loginService.login(correo, util.encriptarContraseña(contrasena));
 		System.out.println("Rol de Persona:" + Services.UsuarioLogeado.getRol());
-		if (respuesta.equals("Login exitoso")) {
-			if (Services.UsuarioLogeado.getRol().equals("Administrador")) {
-				session.setAttribute("Administrador", Services.UsuarioLogeado); // Guarda el usuario en la sesión
+		if (usu.getNombre()!=null) {
+			if (usu.getRol().equals("Administrador")) {
+				session.setAttribute("Usuario", usu); // Guarda el usuario en la sesión
 				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build();
 			} else {
-				session.setAttribute("Usuario", Services.UsuarioLogeado); // Guarda el usuario en la sesión
+				
 				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 			}
 		} else {
@@ -52,7 +53,7 @@ public class LoginController {
 				util.encriptarContraseña(contrasena), rol);
 
 		if (respuesta.equals("Registro exitoso")) {
-			session.setAttribute("usuario", Services.UsuarioLogeado); // Guarda el usuario en la sesión
+			
 			// Redirige a /index 
 			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 
@@ -69,7 +70,7 @@ public class LoginController {
 		String respuesta = loginService.Delete(correo, util.encriptarContraseña(contrasena));
 
 		if (respuesta.equals("Usuario Eliminado")) {
-			session.setAttribute("usuario", Services.UsuarioLogeado); // Guarda el usuario en la sesión
+		
 			// Redirige a /index // Redirige a la vista principal
 			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 		} else {
@@ -86,7 +87,7 @@ public class LoginController {
 		String respuesta = loginService.Put(nombre, apellidos, correo, direccion, telefono);
 
 		if (respuesta.equals("Usuario actualizado")) {
-			session.setAttribute("usuario", Services.UsuarioLogeado); // Guarda el usuario en la sesión
+			
 			// Redirige a /index // Redirige a la vista principal
 			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 		} else {
@@ -95,5 +96,55 @@ public class LoginController {
 
 		}
 	}
+	@PostMapping("/correoRecuperar")
+	public ResponseEntity<Void> recuperarContrasena(@RequestParam String correoRecuperar,HttpSession session){
+		String respuesta = loginService.recuperarContrasena( correoRecuperar);
+		
+		if (respuesta.equals("Correo existente")) {
+			
+			// Redirige a /index // Redirige a la vista principal
+			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/mirarCorreo.jsp")).build();
+		} else {
+			// Redirige a /login con error
+			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build();
+
+		}
+	}
+	@PostMapping("/escribirContrasena")
+	public ResponseEntity<Void> escribirContrasena(@RequestParam String contrasena,HttpSession session){
+		String respuesta = loginService.recuperarContrasena( contrasena);
+		
+		if (respuesta.equals("Correo existente")) {
+		
+			// Redirige a /index // Redirige a la vista principal
+			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/nuevaContrasena.jsp")).build();
+		} else {
+			// Redirige a /login con error
+			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build();
+
+		}
+	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -10,12 +10,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
 
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import tienda.bonsaissur.dtos.Usuario;
 import tienda.bonsaissur.util.util;
 
@@ -25,9 +32,11 @@ public class Services {
 	public static Usuario UsuarioLogeado = new Usuario();
 	public static List<Usuario> listaUsu = new ArrayList();
 	public String API_URL_LOGIN = "http://localhost:8081/api/usuarios/login";
+	public static String tokenGlobal;
 
-	public String login(String correo, String contrasena) {
+	public Usuario login(String correo, String contrasena) {
 		String res = "";
+		Usuario usu = new Usuario();
 		try {
 			HttpClient client = HttpClient.newHttpClient();
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -47,15 +56,15 @@ public class Services {
 				});
 				listaUsu = usuarios; // Actualizar la lista local
 
-				Usuario usu = new Usuario();
+				
 				usu.setContrasena(contrasena);
-				 System.out.println(contrasena);
+				System.out.println(contrasena);
 				usu.setCorreo(correo);
 				boolean comprobacion = false;
 				for (Usuario Aux : listaUsu) {
 
 					if (Aux.getCorreo().equals(usu.getCorreo()) && Aux.getContrasena().equals(usu.getContrasena())) {
-						UsuarioLogeado = Aux;
+						usu = Aux;
 						comprobacion = true;
 						if (comprobacion == false) {
 							System.out.println("No se encontro en la lista");
@@ -80,6 +89,7 @@ public class Services {
 				// Enviar la solicitud
 				HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+				
 				// Imprimir la respuesta
 				if (response.statusCode() == 200) {
 					System.out.println("Respuesta Login : " + response.body());
@@ -93,7 +103,7 @@ public class Services {
 			System.out.println("Ocurrio un error en Login");
 			res = "Ocurrio un error en Login";
 		}
-		return res;
+		return usu;
 	}
 
 	public String Post(String nombre, String apellidos, String correo, String direccion, String telefono,
@@ -207,7 +217,7 @@ public class Services {
 	}
 
 	public String Put(String nombre, String apellidos, String correo, String direccion, String telefono) {
-		String resp="";
+		String resp = "";
 		try {
 			HttpClient client = HttpClient.newHttpClient();
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -234,7 +244,7 @@ public class Services {
 				if (usuario != null) {
 					Usuario usu = UsuarioLogeado;
 					// Actualizar los datos del usuario
-					usu.setNombre(nombre); 
+					usu.setNombre(nombre);
 					usu.setApellidos(apellidos);
 					usu.setCorreo(correo);
 					usu.setDireccion(direccion);
@@ -250,18 +260,163 @@ public class Services {
 					HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 					System.out.println("Respuesta del servidor: " + response.body());
-					resp="Usuario actualizado";
+					resp = "Usuario actualizado";
 				} else {
 					System.out.println("Usuario con correo " + correo + " no encontrado.");
-					resp="Usuario no encontrado";
+					resp = "Usuario no encontrado";
 				}
 			} else {
 				System.out.println("Error al obtener la lista de usuarios: " + responseUsu.statusCode());
-				resp="Ocurrio un error ";
+				resp = "Ocurrio un error ";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return resp;
 	}
+
+	// Método para enviar correos
+	public void enviarCorreo(String correoDestinatario, String asunto, String token) throws MessagingException {
+		JavaMailSender mailSender = configurarServidorSMTP();
+		MimeMessage mimeMessage = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+		String mensaje = "http://localhost:8080/bonsaissur/nuevaContrasena.jsp?token=";
+
+		helper.setTo(correoDestinatario);
+		helper.setSubject(asunto);
+		helper.setText(mensaje + token, false); // false = texto plano
+		helper.setFrom("bonsaissur@gmail.com");
+
+		mailSender.send(mimeMessage);
+		System.out.println("[Correo enviado a " + correoDestinatario + "]");
+	}
+
+	// Configuración del servidor SMTP (solo si no inyectas JavaMailSender desde
+	// Spring)
+	private JavaMailSender configurarServidorSMTP() {
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		mailSender.setHost("smtp.gmail.com");
+		mailSender.setPort(587);
+		mailSender.setUsername("bonsaissur@gmail.com");
+		mailSender.setPassword("msprjeksnbhekmjc");
+
+		Properties props = mailSender.getJavaMailProperties();
+		props.put("mail.transport.protocol", "smtp");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.starttls.required", "true");
+
+		mailSender.setJavaMailProperties(props);
+		return mailSender;
+	}
+
+	public String recuperarContrasena(String correoDestinatario) {
+		String resp = "";
+		HttpClient client = HttpClient.newHttpClient();
+		ObjectMapper objectMapper = new ObjectMapper();
+		String API_URL = "http://localhost:8081/api/usuarios/actualizar";
+		try {
+
+			HttpRequest requestUsu = HttpRequest.newBuilder()
+					.uri(URI.create("http://localhost:8081/api/usuarios/todos")).header("Accept", "application/json")
+					.GET().build();
+
+			HttpResponse<String> responseUsu = client.send(requestUsu, HttpResponse.BodyHandlers.ofString());
+
+			if (responseUsu.statusCode() == 200) {
+				List<Usuario> usuarios = objectMapper.readValue(responseUsu.body(), new TypeReference<List<Usuario>>() {
+				});
+				Services.listaUsu = usuarios;
+				Usuario usuario = Services.listaUsu.stream()
+						.filter(usu -> usu.getCorreo().equalsIgnoreCase(correoDestinatario)).findFirst().orElse(null);
+
+				if (usuario == null) {
+					System.out.println("Usuario no encontrado.");
+				}
+				// Generar Token único
+				tokenGlobal = "";
+				String token = UUID.randomUUID().toString();
+				usuario.setToken(token);
+				String json = objectMapper.writeValueAsString(usuario);
+				HttpRequest request = HttpRequest.newBuilder().uri(URI.create(API_URL))
+						.header("Content-Type", "application/json").PUT(HttpRequest.BodyPublishers.ofString(json))
+						.build();
+
+				HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+				System.out.println("Respuesta del servidor: " + response.body());
+				resp = "Usuario actualizado";
+
+				// Calcular la fecha de expiración del token (1 hora desde ahora)
+				usuario.setFechaToken(new Timestamp(System.currentTimeMillis() + 3600000));
+				System.out.println(usuario.toString());
+				enviarCorreo(correoDestinatario, "Recuperacion de contraseña", token);
+				resp = "Correo existente";
+
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return resp;
+	}
+
+	public String actualizarContrasena(String contrasena, String token) {
+		String resp = "";
+		try {
+			HttpClient client = HttpClient.newHttpClient();
+			ObjectMapper objectMapper = new ObjectMapper();
+			String API_URL = "http://localhost:8081/api/usuarios/actualizar";
+			String API_URL_SELECT = "http://localhost:8081/api/usuarios/todos";
+
+			// 1. Obtener la lista actualizada de usuarios desde la API
+			HttpRequest requestUsu = HttpRequest.newBuilder().uri(URI.create(API_URL_SELECT))
+					.header("Accept", "application/json").GET().build();
+
+			HttpResponse<String> responseUsu = client.send(requestUsu, HttpResponse.BodyHandlers.ofString());
+
+			if (responseUsu.statusCode() == 200) {
+				// Convertir la respuesta JSON a lista de usuarios
+				List<Usuario> usuarios = objectMapper.readValue(responseUsu.body(), new TypeReference<List<Usuario>>() {
+				});
+				listaUsu = usuarios; // Actualizar la lista local
+
+				System.out.println("Total de usuarios cargados:" + listaUsu.size());
+				// 2. Buscar el usuario con el correo proporcionado
+				Usuario usuario = new Usuario();
+				for (Usuario usu : usuarios) {
+					if (token.equalsIgnoreCase(usu.getToken())) {
+
+					}
+
+				}
+
+				if (usuario != null) {
+					Usuario usu = UsuarioLogeado;
+					// Actualizar los datos del usuario
+					usu.setContrasena(contrasena);
+
+					// 3. Enviar la solicitud PUT con el usuario actualizado
+					String json = objectMapper.writeValueAsString(usu);
+
+					HttpRequest request = HttpRequest.newBuilder().uri(URI.create(API_URL))
+							.header("Content-Type", "application/json").PUT(HttpRequest.BodyPublishers.ofString(json))
+							.build();
+
+					HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+					System.out.println("Respuesta del servidor: " + response.body());
+					resp = "Usuario actualizado";
+				} else {
+					resp = "Usuario no encontrado";
+				}
+			} else {
+				System.out.println("Error al obtener la lista de usuarios: " + responseUsu.statusCode());
+				resp = "Ocurrio un error ";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resp;
+	}
+
 }
