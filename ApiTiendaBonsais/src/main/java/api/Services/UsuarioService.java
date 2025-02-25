@@ -6,11 +6,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import api.Daos.Usuario;
 import api.Repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
-
+@CrossOrigin(origins = "http://localhost:4200") // Permitir solicitudes desde Angular
 @Service
 public class UsuarioService {
 
@@ -27,6 +28,7 @@ public class UsuarioService {
 	    }
 
 	// Inicio de sesión de un usuario por correo y contraseña
+	 
 	 public String loginUsuario(String correo, String contrasena) {
 		    // Buscar al usuario por correo
 		    Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
@@ -53,32 +55,40 @@ public class UsuarioService {
 
 	// Actualizar un usuario existente por ID
 	public Usuario updateUsuario(Long id, Usuario usuarioDetails) {
+		
 	    // Buscar el usuario por ID, y lanzar excepción si no se encuentra
-	    Usuario usuario = usuarioRepository.findById(id)
-	            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+		Usuario usuario;
+		usuario = usuarioRepository.findById(id)  .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+		try {
+		
+			      
 
-	    // Actualizar los campos del usuario con los detalles proporcionados
-	    usuario.setNombre(usuarioDetails.getNombre());
-	    usuario.setApellidos(usuarioDetails.getApellidos());
-	    usuario.setCorreo(usuarioDetails.getCorreo());
-	    usuario.setDireccion(usuarioDetails.getDireccion());
-	    usuario.setContrasena(usuarioDetails.getContrasena());
-	    usuario.setFechaRegistro(usuarioDetails.getFechaRegistro());
-	    usuario.setRol(usuarioDetails.getRol());
-	    usuario.setToken(usuarioDetails.getToken());
-	    usuario.setFechaToken(usuarioDetails.getFechaToken());
-	    usuario.setTelefono(usuarioDetails.getTelefono());
-	    usuario.setFotoUsu(usuarioDetails.getFotoUsu());
+			// Actualizar los campos del usuario con los detalles proporcionados
+			usuario.setNombre(usuarioDetails.getNombre());
+			usuario.setApellidos(usuarioDetails.getApellidos());
+			usuario.setCorreo(usuarioDetails.getCorreo());
+			usuario.setDireccion(usuarioDetails.getDireccion());
+			usuario.setContrasena(usuarioDetails.getContrasena());
+			usuario.setFechaRegistro(usuarioDetails.getFechaRegistro());
+			usuario.setRol(usuarioDetails.getRol());
+			usuario.setToken(usuarioDetails.getToken());
+			usuario.setFechaToken(usuarioDetails.getFechaToken());
+			usuario.setTelefono(usuarioDetails.getTelefono());
+			usuario.setFotoUsu(usuarioDetails.getFotoUsu());
 
-	    // Guardar los cambios en la base de datos
+			// Guardar los cambios en la base de datos
+		} catch (RuntimeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    return usuarioRepository.save(usuario);
 	}
 
 
 	// Eliminar un usuario por correo y contraseña
 	@Transactional
-	public Usuario deleteUsuario(String correo, String contrasena) {
-		Optional<Usuario> usuario = usuarioRepository.findByCorreoAndContrasena(correo, contrasena);
+	public Usuario deleteUsuario(String correo) {
+		Optional<Usuario> usuario = usuarioRepository.findByCorreo(correo);
 		if (usuario.isPresent()) {
 			usuarioRepository.delete(usuario.get());
 			return usuario.get();

@@ -21,8 +21,11 @@ import api.Daos.Usuario;
 import api.Services.UsuarioService;
 import send.email.template.EmailTemplate;
 
-@RestController // Asegúrate de que esta anotación esté presente
+@RestController
 @RequestMapping("/api/usuarios") // Define la ruta base para este controlador
+/**
+ * Clase controladora de las rutas para acceder a los metodos controlador
+ */
 public class UsuarioController {
     
     private final UsuarioService usuarioService;
@@ -54,11 +57,11 @@ public class UsuarioController {
         System.out.println("Intentando eliminar usuario con correo: " + usuario.getCorreo());
 
         // Verifica que el objeto usuario no sea nulo y que tenga correo y contraseña
-        if (usuario == null || usuario.getCorreo() == null || usuario.getContrasena() == null) {
-            return new ResponseEntity<>("Correo y contraseña son requeridos", HttpStatus.BAD_REQUEST);
+        if (usuario == null || usuario.getCorreo() == null ) {
+            return new ResponseEntity<>("Correo  requerido", HttpStatus.BAD_REQUEST);
         }
 
-        Usuario usuarioEliminado = usuarioService.deleteUsuario(usuario.getCorreo(), usuario.getContrasena());
+        Usuario usuarioEliminado = usuarioService.deleteUsuario(usuario.getCorreo());
 
         if (usuarioEliminado != null) {
             return new ResponseEntity<>("Usuario eliminado correctamente", HttpStatus.OK);
