@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%@ page import="tienda.bonsaissur.dtos.Usuario"%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -79,9 +80,26 @@
 						<i class="bi bi-search"></i>
 					</button>
 				</form>
-				<!-- Íconos -->
-				<a href="carrito.jsp" class="me-3 icono"><i class="bi bi-cart"></i></a>
+				 <!-- Íconos -->
+               <a href="carrito.jsp" class="me-3 icono"><i class="bi bi-cart"></i></a>
+				<%
+				Usuario usuario = (Usuario) session.getAttribute("Usuario");
+				if (usuario != null) {
+					if ("Administrador".equals(usuario.getRol())) {
+				%>
+				<a href="login.jsp" class="icono"><i class="bi bi-person"></i></a>
+				<%
+				} else {
+				%>
 				<a href="loginUsu.jsp" class="icono"><i class="bi bi-person"></i></a>
+				<%
+				}
+				} else {
+				%>
+				<a href="loginUsu.jsp" class="icono"><i class="bi bi-person"></i></a>
+				<%
+				}
+				%>
 			</div>
 		</div>
 	</nav>

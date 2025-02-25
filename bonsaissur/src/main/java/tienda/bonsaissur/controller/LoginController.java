@@ -16,7 +16,9 @@ import tienda.bonsaissur.services.Services;
 import tienda.bonsaissur.util.util;
 
 @Controller
-
+/**
+ * Clase encargada de los controladores de las vistas
+ */
 public class LoginController {
 
 	private final Services service;
@@ -24,139 +26,226 @@ public class LoginController {
 	public LoginController(Services loginService) {
 		this.service = loginService;
 	}
+
+	/**
+	 * Metodo controlador encargado de mostrar las vistas de cerrar sesion
+	 * 
+	 * @param session
+	 * @return
+	 */
 	@PostMapping("/cerrarSesion")
-	public ResponseEntity<Void> cerrarSesion(HttpSession session){
-		
-		  if (session != null) {
-			  session.invalidate(); // Cierra la sesión
-			  return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build(); // Redirige al index
-	        }else {
-		  return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build(); // Redirige al login
-	    }
-		
+	public ResponseEntity<Void> cerrarSesion(HttpSession session) {
+
+		try {
+			if (session != null) {
+				session.invalidate(); // Cierra la sesión
+				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
+				// Redirige al index
+			} else {
+				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build();
+				// Redirige al login
+			}
+		} catch (Exception e) {
+
+		}
+		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
+
 	}
 
+	/**
+	 * Metodo controlador encargado de mostrar las vistas del login
+	 * 
+	 * @param correo
+	 * @param contrasena
+	 * @param session
+	 * @return
+	 */
 	@PostMapping("/login")
 	public ResponseEntity<Void> login(@RequestParam String correo, @RequestParam String contrasena,
 			HttpSession session) {
-		Usuario usu = service.login(correo, util.encriptarContraseña(contrasena));
-		System.out.println("Rol de Persona:" + usu.getRol());
-		if (usu.getNombre()!=null) {
-			if (usu.getRol().equals("Administrador")) {
-				session.setAttribute("Usuario", usu); // Guarda el usuario en la sesión
-				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build();
+		try {
+			Usuario usu = service.login(correo, util.encriptarContraseña(contrasena), session);
+			System.out.println("Rol de Persona:" + usu.getRol());
+			if (usu.getNombre() != null) {
+				if (usu.getRol().equals("Administrador")) {
+					session.setAttribute("Usuario", usu); // Guarda el usuario en la sesión
+					return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp"))
+							.build();
+				} else {
+					session.setAttribute("Usuario", usu); // Guarda el usuario en la sesión
+					return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp"))
+							.build();
+				}
 			} else {
-				session.setAttribute("Usuario", usu); // Guarda el usuario en la sesión
-				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
+				// Redirige a /login
+				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/loginUsu.jsp")).build();
+
 			}
-		} else {
-			// Redirige a /login 
-			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/loginUsu.jsp")).build();
+		} catch (Exception e) {
 
 		}
+		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 	}
 
+	/**
+	 * Metodo controlador encargado de controlar las vistas de registro
+	 * 
+	 * @param nombre
+	 * @param apellidos
+	 * @param correo
+	 * @param contrasena
+	 * @param direccion
+	 * @param telefono
+	 * @param rol
+	 * @param session
+	 * @return
+	 */
 	@PostMapping("/registro")
 	public ResponseEntity<Void> registro(@RequestParam String nombre, @RequestParam String apellidos,
 			@RequestParam String correo, @RequestParam String contrasena, @RequestParam String direccion,
 			@RequestParam String telefono, @RequestParam String rol, HttpSession session) {
-		String respuesta = service.Post(nombre, apellidos, correo, direccion, telefono,
-				util.encriptarContraseña(contrasena), rol);
+		try {
+			String respuesta = service.Post(nombre, apellidos, correo, direccion, telefono,
+					util.encriptarContraseña(contrasena), rol);
+			Usuario usuario = (Usuario) session.getAttribute("Usuario");
+			if (respuesta.equals("Registro exitoso")) {
 
-		if (respuesta.equals("Registro exitoso")) {
-			
-			// Redirige a /index 
-			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
+				// Redirige a /index
+				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 
-		} else {
-			// Redirige a /login con error
-			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/loginUsu.jsp")).build();
+			} else {
+				if (usuario.getRol().equals("Administrador")) {
+
+					return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp"))
+							.build();
+				} else {
+
+					return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp"))
+							.build();
+				}
+			}
+		} catch (Exception e) {
 
 		}
+		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 	}
 
+	/**
+	 * Metodo controlador encargado de controlar las vistas de eliminar
+	 * 
+	 * @param correo
+	 * @param session
+	 * @return
+	 */
 	@PostMapping("/eliminar")
-	public ResponseEntity<Void> eliminar(@RequestParam String correo, @RequestParam String contrasena,
-			HttpSession session) {
-		String respuesta = service.Delete(correo, util.encriptarContraseña(contrasena));
-		
-		if (respuesta.equals("Usuario Eliminado")) {
-		
-			// Redirige a /index // Redirige a la vista principal
-			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
-		} else {
-			// Redirige a /login con error
-			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build();
+	public ResponseEntity<Void> eliminar(@RequestParam String correo, HttpSession session) {
+		try {
+			service.getAllUsu(session);
+			String respuesta = service.Delete(correo);
+
+			if (respuesta.equals("Usuario Eliminado")) {
+
+				// Redirige a /index // Redirige a la vista principal
+				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
+			} else {
+				// Redirige a /login con error
+				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build();
+
+			}
+		} catch (Exception e) {
 
 		}
+		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 	}
 
+	/**
+	 * Metodo controlador encargado de mostrar las vistas de de actualizar
+	 * 
+	 * @param nombre
+	 * @param apellidos
+	 * @param direccion
+	 * @param telefono
+	 * @param session
+	 * @return
+	 */
 	@PostMapping("/actualizar")
 	public ResponseEntity<Void> actualizar(@RequestParam String nombre, @RequestParam String apellidos,
-			 @RequestParam String direccion, @RequestParam String telefono,
-			HttpSession session) {
-		 Usuario usuario = (Usuario) session.getAttribute("Usuario");
-		String respuesta = service.Put(nombre, apellidos, usuario.getCorreo(), direccion, telefono);
+			@RequestParam String direccion, @RequestParam String telefono, HttpSession session) {
+		try {
+			Usuario usuario = (Usuario) session.getAttribute("Usuario");
+			String respuesta = service.Put(nombre, apellidos, usuario.getCorreo(), direccion, telefono);
 
-		if (respuesta.equals("Usuario actualizado")) {
-			
-			// Redirige a /index // Redirige a la vista principal
-			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
-		} else {
-			// Redirige a /login con error
-			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build();
+			if (respuesta.equals("Usuario actualizado")) {
+
+				// Redirige a /index // Redirige a la vista principal
+				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
+			} else {
+				// Redirige a /login con error
+				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build();
+
+			}
+		} catch (Exception e) {
 
 		}
+		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 	}
+
+	/**
+	 * Metodo controlador encargado de controlar las vistas derecordatorio de correo
+	 * 
+	 * @param correoRecuperar
+	 * @param session
+	 * @return
+	 */
 	@PostMapping("/correoRecuperar")
-	public ResponseEntity<Void> recuperarContrasena(@RequestParam String correoRecuperar,HttpSession session){
-		String respuesta = service.recuperarContrasena( correoRecuperar);
-		
-		if (respuesta.equals("Correo existente")) {
-			
-			// Redirige a /index // Redirige a la vista principal
-			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/mirarCorreo.jsp")).build();
-		} else {
-			// Redirige a /login con error
-			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build();
+	public ResponseEntity<Void> recuperarContrasena(@RequestParam String correoRecuperar, HttpSession session) {
+		try {
+			String respuesta = service.recuperarContrasena(correoRecuperar);
+
+			if (respuesta.equals("Correo existente")) {
+
+				// Redirige a /index // Redirige a la vista principal
+				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/mirarCorreo.jsp"))
+						.build();
+			} else {
+				// Redirige a /login con error
+				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/login.jsp")).build();
+
+			}
+		} catch (Exception e) {
 
 		}
+		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 	}
+
+	/**
+	 * Metodo controlador encargado de mostrar las vistas de escrbir contraseña de
+	 * recuperacion
+	 * 
+	 * @param nuevaContrasena
+	 * @param token
+	 * @param session
+	 * @return
+	 */
 	@PostMapping("/escribirContrasena")
-	public ResponseEntity<Void> escribirContrasena(@RequestParam String nuevaContrasena,@RequestParam String token,HttpSession session){
-		String respuesta = service.actualizarContrasena( nuevaContrasena,token);
-		
-		if (respuesta.equals("Usuario actualizado")) {
-		
-			// Redirige a /index // Redirige a la vista principal
-			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/loginUsu.jsp")).build();
-		} else {
-			// Redirige a /login con error
-			return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
+	public ResponseEntity<Void> escribirContrasena(@RequestParam String nuevaContrasena, @RequestParam String token,
+			HttpSession session) {
+		try {
+			String respuesta = service.actualizarContrasena(nuevaContrasena, token);
+
+			if (respuesta.equals("Usuario actualizado")) {
+
+				// Redirige a /index // Redirige a la vista principal
+				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/loginUsu.jsp")).build();
+			} else {
+				// Redirige a /login con error
+				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
+
+			}
+		} catch (Exception e) {
 
 		}
+		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

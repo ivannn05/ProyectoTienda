@@ -1,3 +1,6 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
+
 <%@page import="tienda.bonsaissur.dtos.Usuario"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -123,24 +126,37 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab" aria-controls="register" aria-selected="false">Registrarse</button>
             </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="update-tab" data-bs-toggle="tab" data-bs-target="#update" type="button" role="tab" aria-controls="update" aria-selected="false">Actualizar Usuario</button>
-            </li>
-            <%
- 
-    if (usuario!=null) {
-%>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="eliminar-tab" data-bs-toggle="tab" data-bs-target="#eliminar" type="button" role="tab" aria-controls="eliminar" aria-selected="false">Eliminar Usuario</button>
-            </li>
-            			<%
-    } else {
-%>
-    
-<%
-    }
-%>
-        </ul>
+           <%
+			if (usuario != null) {
+				
+			%>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="update-tab" data-bs-toggle="tab"
+					data-bs-target="#update" type="button" role="tab"
+					aria-controls="update" aria-selected="false">Actualizar
+					Usuario</button>
+			</li>
+			<%
+			
+				if (usuario.getRol().equals("Administrador")) {
+			%>
+
+
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="eliminar-tab" data-bs-toggle="tab"
+					data-bs-target="#eliminar" type="button" role="tab"
+					aria-controls="eliminar" aria-selected="false">Eliminar
+					Usuario</button>
+			</li>
+			<%
+			}else{}
+			} else {
+			%>
+
+			<%
+			}
+			%>
+		</ul>
 
 
 		<!-- Formulario de Login -->
@@ -257,23 +273,36 @@
 							name="correo" id="correoEliminar"
 							placeholder="Introduce el correo electrónico" required>
 					</div>
-					<div class="mb-3">
-						<label for="contrasenaEliminar" class="form-label">Contraseña</label>
-						<input type="password" class="form-control" name="contrasena"
-							id="contrasenaEliminar"
-							placeholder="Introduce tu contraseña para confirmar" required>
-					</div>
-					<div class="mb-3">
-						<label for="confirmarContrasenaEliminar" class="form-label">Confirmar
-							Contraseña</label> <input type="password" class="form-control"
-							name="confirmarContrasena" id="confirmarContrasenaEliminar"
-							placeholder="Confirma tu contraseña" required>
-					</div>
+					
+					
 					<button type="submit" class="btn btn-danger w-100">Eliminar
 						Usuario</button>
 				</form>
-
+		<!-- Lista de Usuarios -->
+			<%
+    List<Usuario> listaUsuarios = (ArrayList) session.getAttribute("listaUsuarios");
+%>
+<br>
+<br>
+	<h2 style="text-align: center;">Usuarios Registrados</h2>
+<table border="1" style="margin: 0 auto; text-align: center;">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for (Usuario usua : listaUsuarios) { %>
+            <tr>
+                <td><%= usua.getNombre() %></td>
+                <td><%= usua.getCorreo() %></td>
+            </tr>
+        <% } %>
+    </tbody>
+</table>
 			</div>
+	
   
 			<%
     } else {
@@ -283,23 +312,7 @@
     }
 %>
 			<!-- Script de validación para la confirmación de contraseña -->
-			<script>
-				document
-						.getElementById("form_eliminar")
-						.addEventListener(
-								"submit",
-								function(event) {
-									var contrasena = document
-											.getElementById("contrasenaEliminar").value;
-									var confirmarContrasena = document
-											.getElementById("confirmarContrasenaEliminar").value;
-
-									if (contrasena !== confirmarContrasena) {
-										event.preventDefault(); // Detiene el envío del formulario
-										alert("Las contraseñas no coinciden. Por favor, verifica e inténtalo de nuevo.");
-									}
-								});
-			</script>
+			
 		</div>
 
 	</div>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-	<%@ page import="tienda.bonsaissur.dtos.Usuario" %>
+<%@ page import="tienda.bonsaissur.dtos.Usuario" %>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -95,17 +96,18 @@
 					class="me-3 icono"><i class="bi bi-cart"></i></a> <a
 					href="<%=request.getContextPath()%>/login.jsp" class="icono"><i
 					class="bi bi-person"></i></a>
-					<!-- Ícono cerrar sesión -->
-					<%
-    Usuario usuario = (Usuario) session.getAttribute("Usuario");
-    if (usuario != null) {
-%>
-    <form action="<%=request.getContextPath()%>/cerrarSesion" method="post">
-        <button type="submit" class="btn btn-danger">Cerrar Sesión</button>
-    </form>
-<%
-    }
-%>
+				<!-- Ícono cerrar sesión -->
+				<%
+				Usuario usuario = (Usuario) session.getAttribute("Usuario");
+				if (usuario != null) {
+				%>
+				<form action="<%=request.getContextPath()%>/cerrarSesion"
+					method="post">
+					<button type="submit" class="btn btn-danger">Cerrar Sesión</button>
+				</form>
+				<%
+				}
+				%>
 			</div>
 		</div>
 	</nav>
@@ -125,6 +127,9 @@
 					data-bs-target="#register" type="button" role="tab"
 					aria-controls="register" aria-selected="false">Registrarse</button>
 			</li>
+			<%
+			if (usuario != null) {
+			%>
 			<li class="nav-item" role="presentation">
 				<button class="nav-link" id="update-tab" data-bs-toggle="tab"
 					data-bs-target="#update" type="button" role="tab"
@@ -132,6 +137,13 @@
 					Usuario</button>
 			</li>
 
+			<%
+			} else {
+			%>
+
+			<%
+			}
+			%>
 		</ul>
 
 
@@ -225,12 +237,7 @@
 						<input type="text" class="form-control" id="apellidosUpdate"
 							name="apellidos" placeholder="Introduce tus apellidos" required>
 					</div>
-					<!-- <div class="mb-3">
-						<label for="correoUpdate" class="form-label">Correo
-							Electrónico</label> <input type="email" class="form-control"
-							id="correoUpdate" name="correo"
-							placeholder="Introduce tu correo electrónico" required>
-					</div> -->
+
 					<div class="mb-3">
 						<label for="direccionUpdate" class="form-label">Dirección</label>
 						<input type="text" class="form-control" id="direccionUpdate"

@@ -1,7 +1,9 @@
 package tienda.bonsaissur.dtos;
 
 import java.sql.Timestamp;
-
+/**
+ * Clase dto encargada de contener los campos del Usuario
+ */
 public class Usuario {
 
     private Long id;

@@ -24,18 +24,61 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpSession;
 import tienda.bonsaissur.dtos.Usuario;
 import tienda.bonsaissur.util.util;
 
 @Service
+/**
+ * Clase servicio encargada de contener los metodos de servicio de la aplicacion
+ */
 public class Services {
 
 	public static Usuario UsuarioLogeado = new Usuario();
 	public static List<Usuario> listaUsu = new ArrayList();
 	public String API_URL_LOGIN = "http://localhost:8081/api/usuarios/login";
 	public static String tokenGlobal;
+/**
+ * Metodo encargado de actualizar la lista de usuarios 
+ * @param session
+ * @return
+ */
+	public Usuario getAllUsu(HttpSession session) {
+		String res = "";
+		Usuario usu = new Usuario();
+		try {
+			HttpClient client = HttpClient.newHttpClient();
+			ObjectMapper objectMapper = new ObjectMapper();
 
-	public Usuario login(String correo, String contrasena) {
+			String API_URL_SELECT = "http://localhost:8081/api/usuarios/todos"; // Endpoint para obtener todos los
+			// usuarios
+
+// 1. Obtener la lista actualizada de usuarios desde la API
+			HttpRequest requestUsu = HttpRequest.newBuilder().uri(URI.create(API_URL_SELECT))
+					.header("Accept", "application/json").GET().build();
+
+			HttpResponse<String> responseUsu = client.send(requestUsu, HttpResponse.BodyHandlers.ofString());
+
+			if (responseUsu.statusCode() == 200) {
+// Convertir la respuesta JSON a lista de usuarios
+				List<Usuario> usuarios = objectMapper.readValue(responseUsu.body(), new TypeReference<List<Usuario>>() {
+				});
+				session.setAttribute("listaUsuarios", usuarios); // Guardar en sesión
+			}
+		} catch (Exception e) {
+			System.out.println("Ocurrio un error en Login");
+			res = "Ocurrio un error en Login";
+		}
+		return usu;
+	}
+/**
+ * Metodo encargado de hacer las querys para el login
+ * @param correo
+ * @param contrasena
+ * @param session
+ * @return
+ */
+	public Usuario login(String correo, String contrasena, HttpSession session) {
 		String res = "";
 		Usuario usu = new Usuario();
 		try {
@@ -55,9 +98,9 @@ public class Services {
 // Convertir la respuesta JSON a lista de usuarios
 				List<Usuario> usuarios = objectMapper.readValue(responseUsu.body(), new TypeReference<List<Usuario>>() {
 				});
+				session.setAttribute("listaUsuarios", usuarios); // Guardar en sesión
 				listaUsu = usuarios; // Actualizar la lista local
 
-				
 				usu.setContrasena(contrasena);
 				System.out.println(contrasena);
 				usu.setCorreo(correo);
@@ -90,7 +133,6 @@ public class Services {
 				// Enviar la solicitud
 				HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-				
 				// Imprimir la respuesta
 				if (response.statusCode() == 200) {
 					System.out.println("Respuesta Login : " + response.body());
@@ -106,7 +148,17 @@ public class Services {
 		}
 		return usu;
 	}
-
+/**
+ * Metodo encargado de crear usuario
+ * @param nombre
+ * @param apellidos
+ * @param correo
+ * @param direccion
+ * @param telefono
+ * @param contrasena
+ * @param rol
+ * @return
+ */
 	public String Post(String nombre, String apellidos, String correo, String direccion, String telefono,
 			String contrasena, String rol) {
 
@@ -146,8 +198,12 @@ public class Services {
 			return "Registro erroneo";
 		}
 	}
-
-	public String Delete(String correo, String contrasena) {
+/**
+ * Metodo encargado de eliminar usuarios
+ * @param correo
+ * @return
+ */
+	public String Delete(String correo) {
 		String respuesta = "";
 		try {
 
@@ -168,11 +224,10 @@ public class Services {
 				// Convertir la respuesta JSON a lista de usuarios
 				List<Usuario> usuarios = objectMapper.readValue(responseUsu.body(), new TypeReference<List<Usuario>>() {
 				});
-				listaUsu = usuarios; // Actualizar la lista local
 
 				// 2. Usar el método eliminarUsu para buscar el usuario
 				Usuario usuario = new Usuario();
-				usuario.setContrasena(contrasena);
+
 				usuario.setCorreo(correo);
 
 				if (usuario != null && !usuario.getCorreo().isEmpty()) {
@@ -180,7 +235,6 @@ public class Services {
 					// eliminarlo
 					Map<String, String> userToDelete = new HashMap<>();
 					userToDelete.put("correo", usuario.getCorreo());
-					userToDelete.put("contrasena", usuario.getContrasena());
 
 					// Convertir el mapa a JSON
 					String json = objectMapper.writeValueAsString(userToDelete);
@@ -198,6 +252,7 @@ public class Services {
 						System.out.println("Usuario " + usuario.getCorreo() + " eliminado correctamente.");
 						// Actualizar la lista local para reflejar el cambio
 						listaUsu.remove(usuario);
+
 						respuesta = "Usuario Eliminado";
 					} else {
 						System.out.println("Error al eliminar usuario: " + response.body());
@@ -216,7 +271,15 @@ public class Services {
 		System.out.println(respuesta);
 		return respuesta;
 	}
-
+/**
+ * Metodo encargado de actualizar los datos de los usuarios
+ * @param nombre
+ * @param apellidos
+ * @param correo
+ * @param direccion
+ * @param telefono
+ * @return
+ */
 	public String Put(String nombre, String apellidos, String correo, String direccion, String telefono) {
 		String resp = "";
 		try {
@@ -243,7 +306,7 @@ public class Services {
 						.orElse(null);
 
 				if (usuario != null) {
-					Usuario usu = UsuarioLogeado;
+					Usuario usu = usuario;
 					// Actualizar los datos del usuario
 					usu.setNombre(nombre);
 					usu.setApellidos(apellidos);
@@ -276,7 +339,13 @@ public class Services {
 		return resp;
 	}
 
-	// Método para enviar correos
+	/**
+	 * Metodo encargado de enviar los correos de recuperar contrasena
+	 * @param correoDestinatario
+	 * @param asunto
+	 * @param token
+	 * @throws MessagingException
+	 */
 	public void enviarCorreo(String correoDestinatario, String asunto, String token) throws MessagingException {
 		JavaMailSender mailSender = configurarServidorSMTP();
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -292,8 +361,10 @@ public class Services {
 		System.out.println("[Correo enviado a " + correoDestinatario + "]");
 	}
 
-	// Configuración del servidor SMTP (solo si no inyectas JavaMailSender desde
-	// Spring)
+/**
+ * Configuración del servidor SMTP
+ * @return
+ */
 	private JavaMailSender configurarServidorSMTP() {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 		mailSender.setHost("smtp.gmail.com");
@@ -310,7 +381,11 @@ public class Services {
 		mailSender.setJavaMailProperties(props);
 		return mailSender;
 	}
-
+/**
+ * Metodo encargado de hacer la validacion de existencia del correo
+ * @param correoDestinatario
+ * @return
+ */
 	public String recuperarContrasena(String correoDestinatario) {
 		String resp = "";
 		HttpClient client = HttpClient.newHttpClient();
@@ -360,7 +435,12 @@ public class Services {
 		}
 		return resp;
 	}
-
+/**
+ * Metodo encargado de actualizar la contrasena 
+ * @param contrasena
+ * @param token
+ * @return
+ */
 	public String actualizarContrasena(String contrasena, String token) {
 		String resp = "";
 		try {
@@ -384,26 +464,26 @@ public class Services {
 				System.out.println("Total de usuarios cargados:" + listaUsu.size());
 				// 2. Buscar el usuario con el correo proporcionado
 				Usuario usuario = new Usuario();
-				String aux="";
+				String aux = "";
 				for (Usuario usu : usuarios) {
-				    if (token.equalsIgnoreCase(usu.getToken())) {
-				        // Convertir Timestamp a LocalDate
-				        LocalDate fechaToken = usu.getFechaToken().toLocalDateTime().toLocalDate();
-				        
-				        // Comparar con la fecha actual
-				        if (fechaToken.isBefore( LocalDate.now())) {
-				            System.out.println("✅ El token es válido.");
-				            aux="El token es válido";
-				            usuario=usu;
-				        } else {
-				            System.out.println("❌ El token ha expirado.");
-				            aux="El token ha expirado";
-				        }
-				    }
+					if (token.equalsIgnoreCase(usu.getToken())) {
+						// Convertir Timestamp a LocalDate
+						LocalDate fechaToken = usu.getFechaToken().toLocalDateTime().toLocalDate();
+
+						// Comparar con la fecha actual
+						if (fechaToken.isBefore(LocalDate.now())) {
+							System.out.println("✅ El token es válido.");
+							aux = "El token es válido";
+							usuario = usu;
+						} else {
+							System.out.println("❌ El token ha expirado.");
+							aux = "El token ha expirado";
+						}
+					}
 				}
 
 				if (usuario != null) {
-					
+
 					// Actualizar los datos del usuario
 					usuario.setContrasena(util.encriptarContraseña(contrasena));
 

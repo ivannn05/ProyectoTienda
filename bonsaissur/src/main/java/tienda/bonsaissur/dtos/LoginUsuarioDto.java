@@ -1,5 +1,7 @@
 package tienda.bonsaissur.dtos;
-
+/**
+ * Clase encargada del dto de login
+ */
 public class LoginUsuarioDto {
 
     private String correo;

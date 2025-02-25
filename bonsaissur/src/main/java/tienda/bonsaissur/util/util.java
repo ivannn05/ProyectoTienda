@@ -8,8 +8,15 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import tienda.bonsaissur.dtos.Usuario;
-
+/**
+ * Clase encargada de los metodos utilizados en carias partes de la web
+ */
 public class util {
+	/**
+	 * Metodo encargado de encriptar las contraseñas
+	 * @param password
+	 * @return
+	 */
 	public static String encriptarContraseña(String password) {
 		try {
 			// Creamos una instancia de MessageDigest con el algoritmo SHA-256
@@ -30,9 +37,15 @@ public class util {
 
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
-			return null;
+			ficheroLog("Ocurrio un error en encriptarcontraseña", null);
+			return password;
 		}
 	}
+	/**
+	 * Metodo encargado del fichero log
+	 * @param mensaje
+	 * @param usu
+	 */
 	public static void ficheroLog(String mensaje,Usuario usu) {
 		try {
 	  String rutaCompletaLog = "C:\\Users\\ivan\\Desktop\\workspaceProyectoDWS\\proyectotienda.java\\logs".concat("\\").concat("log-").concat(usu.getCorreo()).concat(".txt");
