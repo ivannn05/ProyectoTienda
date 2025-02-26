@@ -37,6 +37,8 @@ public class LoginController {
 	public ResponseEntity<Void> cerrarSesion(HttpSession session) {
 
 		try {
+			
+			util.ficheroLog("Usuario entro en cerrar sesion");
 			if (session != null) {
 				session.invalidate(); // Cierra la sesión
 				return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
@@ -46,7 +48,7 @@ public class LoginController {
 				// Redirige al login
 			}
 		} catch (Exception e) {
-
+util.ficheroLog("Ocurrio un error en cerrarSesion :"+e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 
@@ -64,6 +66,8 @@ public class LoginController {
 	public ResponseEntity<Void> login(@RequestParam String correo, @RequestParam String contrasena,
 			HttpSession session) {
 		try {
+			System.out.println();
+			util.ficheroLog("Usuario con correo:"+correo+" entro en login");
 			Usuario usu = service.login(correo, util.encriptarContraseña(contrasena), session);
 			System.out.println("Rol de Persona:" + usu.getRol());
 			if (usu.getNombre() != null) {
@@ -82,7 +86,7 @@ public class LoginController {
 
 			}
 		} catch (Exception e) {
-
+			util.ficheroLog("Ocurrio un error en login:"+e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 	}
@@ -105,6 +109,7 @@ public class LoginController {
 			@RequestParam String correo, @RequestParam String contrasena, @RequestParam String direccion,
 			@RequestParam String telefono, @RequestParam String rol, HttpSession session) {
 		try {
+			util.ficheroLog("Usuario entro en registro usuario");
 			String respuesta = service.Post(nombre, apellidos, correo, direccion, telefono,
 					util.encriptarContraseña(contrasena), rol);
 			Usuario usuario = (Usuario) session.getAttribute("Usuario");
@@ -125,7 +130,7 @@ public class LoginController {
 				}
 			}
 		} catch (Exception e) {
-
+			util.ficheroLog("Ocurrio un error en registro:"+e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 	}
@@ -140,6 +145,7 @@ public class LoginController {
 	@PostMapping("/eliminar")
 	public ResponseEntity<Void> eliminar(@RequestParam String correo, HttpSession session) {
 		try {
+			util.ficheroLog("Usuario entro en eliminar usuario");
 			service.getAllUsu(session);
 			String respuesta = service.Delete(correo);
 
@@ -153,7 +159,7 @@ public class LoginController {
 
 			}
 		} catch (Exception e) {
-
+			util.ficheroLog("Ocurrio un error en eliminar:"+e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 	}
@@ -172,6 +178,7 @@ public class LoginController {
 	public ResponseEntity<Void> actualizar(@RequestParam String nombre, @RequestParam String apellidos,
 			@RequestParam String direccion, @RequestParam String telefono, HttpSession session) {
 		try {
+			util.ficheroLog("Usuario entro en actualizar usuario");
 			Usuario usuario = (Usuario) session.getAttribute("Usuario");
 			String respuesta = service.Put(nombre, apellidos, usuario.getCorreo(), direccion, telefono);
 
@@ -185,7 +192,7 @@ public class LoginController {
 
 			}
 		} catch (Exception e) {
-
+			util.ficheroLog("Ocurrio un error en actualizar un usuario:"+e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 	}
@@ -200,6 +207,7 @@ public class LoginController {
 	@PostMapping("/correoRecuperar")
 	public ResponseEntity<Void> recuperarContrasena(@RequestParam String correoRecuperar, HttpSession session) {
 		try {
+			util.ficheroLog("Usuario entro en recuperar contraseña");
 			String respuesta = service.recuperarContrasena(correoRecuperar);
 
 			if (respuesta.equals("Correo existente")) {
@@ -213,7 +221,7 @@ public class LoginController {
 
 			}
 		} catch (Exception e) {
-
+			util.ficheroLog("Ocurrio un error en la recuperacion de contraseña:"+e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 	}
@@ -231,6 +239,7 @@ public class LoginController {
 	public ResponseEntity<Void> escribirContrasena(@RequestParam String nuevaContrasena, @RequestParam String token,
 			HttpSession session) {
 		try {
+			util.ficheroLog("Usuario entro en escribir Contraseña");
 			String respuesta = service.actualizarContrasena(nuevaContrasena, token);
 
 			if (respuesta.equals("Usuario actualizado")) {
@@ -243,7 +252,7 @@ public class LoginController {
 
 			}
 		} catch (Exception e) {
-
+			util.ficheroLog("Ocurrio un error en escribir contraseña nueva:"+e.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/bonsaissur/index.jsp")).build();
 	}

@@ -8,6 +8,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bonsai Sur</title>
+<link rel="icon" href="imagenes/LogoTienda.jpg" type="image/jpg">
 <!-- CSS -->
 <link rel="stylesheet" href="estilo.css">
 <!-- Bootstrap CSS -->

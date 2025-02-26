@@ -66,7 +66,8 @@ public class Services {
 				session.setAttribute("listaUsuarios", usuarios); // Guardar en sesión
 			}
 		} catch (Exception e) {
-			System.out.println("Ocurrio un error en Login");
+			System.out.println("Ocurrio un error en getAllUsu");
+			util.ficheroLog("Ocurrio un error en el servicio getAllUsu:"+e.getMessage());
 			res = "Ocurrio un error en Login";
 		}
 		return usu;
@@ -144,6 +145,7 @@ public class Services {
 			}
 		} catch (Exception e) {
 			System.out.println("Ocurrio un error en Login");
+			util.ficheroLog("Ocurrio un error en el servicio login:"+e.getMessage());
 			res = "Ocurrio un error en Login";
 		}
 		return usu;
@@ -194,7 +196,7 @@ public class Services {
 			return "Registro exitoso";
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			util.ficheroLog("Ocurrio un error en el servicio crear Usuario:"+e.getMessage());
 			return "Registro erroneo";
 		}
 	}
@@ -266,7 +268,8 @@ public class Services {
 				System.out.println("Error al obtener la lista de usuarios: " + responseUsu.statusCode());
 			}
 		} catch (Exception e) {
-			System.out.println("Ocurrio un error en Eliminar");
+			System.out.println("Ocurrio un error en Eliminar:"+e.getMessage());
+			util.ficheroLog("Ocurrio un error en Eliminar:"+e.getMessage());
 		}
 		System.out.println(respuesta);
 		return respuesta;
@@ -334,7 +337,8 @@ public class Services {
 				resp = "Ocurrio un error ";
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			util.ficheroLog("Ocurrio un error en el servicio actualizar:"+e.getMessage());
+			
 		}
 		return resp;
 	}
@@ -347,6 +351,7 @@ public class Services {
 	 * @throws MessagingException
 	 */
 	public void enviarCorreo(String correoDestinatario, String asunto, String token) throws MessagingException {
+		try {
 		JavaMailSender mailSender = configurarServidorSMTP();
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
@@ -359,6 +364,10 @@ public class Services {
 
 		mailSender.send(mimeMessage);
 		System.out.println("[Correo enviado a " + correoDestinatario + "]");
+		} catch (Exception e) {
+			util.ficheroLog("Ocurrio un error en el servicio enciar correo:"+e.getMessage());
+			
+		}
 	}
 
 /**
@@ -366,6 +375,7 @@ public class Services {
  * @return
  */
 	private JavaMailSender configurarServidorSMTP() {
+		try {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 		mailSender.setHost("smtp.gmail.com");
 		mailSender.setPort(587);
@@ -380,6 +390,11 @@ public class Services {
 
 		mailSender.setJavaMailProperties(props);
 		return mailSender;
+		} catch (Exception e) {
+			util.ficheroLog("Ocurrio un error en el servicio configurarServidorSMTP:"+e.getMessage());
+			
+		}
+		return null;
 	}
 /**
  * Metodo encargado de hacer la validacion de existencia del correo
@@ -431,7 +446,7 @@ public class Services {
 
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+		util.ficheroLog("Ocurrio un error en el servicio recuperar contraseña;"+e.getMessage());
 		}
 		return resp;
 	}
@@ -506,7 +521,7 @@ public class Services {
 				resp = "Ocurrio un error ";
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			util.ficheroLog("Ocurrio un error en el servicio actualizar contraseña;"+e.getMessage());
 		}
 		return resp;
 	}
