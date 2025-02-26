@@ -10,9 +10,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import api.Daos.Usuario;
 import api.Repository.UsuarioRepository;
+import api.Utilidades.Util;
 import jakarta.transaction.Transactional;
 @CrossOrigin(origins = "http://localhost:4200") // Permitir solicitudes desde Angular
 @Service
+/**
+ * Clase servicio donde contiene los metodos de servicio de la web
+ */
 public class UsuarioService {
 
 	private final UsuarioRepository usuarioRepository;
@@ -22,14 +26,26 @@ public class UsuarioService {
 		this.usuarioRepository = usuarioRepository;
 	}
 
-	// Obtener todos los usuarios
+	/**
+	 *  Metodo encargado de obtener todos los usuarios
+	 * @return
+	 */
 	 public List<Usuario> getAllUsuarios() {
+		 try {
 	        return usuarioRepository.findAll();
+		 }catch (Exception e) {
+			Util.ficheroLog("Ocurrio un error en getAllUsuarios:"+e.getMessage() );
+		}
+		return null;
 	    }
-
-	// Inicio de sesión de un usuario por correo y contraseña
-	 
+/**
+ * Metodo encargado de Inicio de sesión de un usuario por correo y contraseña
+ * @param correo
+ * @param contrasena
+ * @return
+ */	 
 	 public String loginUsuario(String correo, String contrasena) {
+		 try {
 		    // Buscar al usuario por correo
 		    Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
 
@@ -45,22 +61,50 @@ public class UsuarioService {
 
 		    // Si la contraseña es correcta
 		    return "Login exitoso";
+		 }catch (Exception e) {
+				Util.ficheroLog("Ocurrio un error en getAllUsuarios:"+e.getMessage() );
+			}
+		return "";
 	    }
 
 
-	// Crear un nuevo usuario
+	/**
+	 *  Metoso encargado de Crear un nuevo usuario
+	 * @param usuario
+	 * @return
+	 */
 	public Usuario createUsuario(Usuario usuario) {
 		return usuarioRepository.save(usuario);
 	}
-
-	// Actualizar un usuario existente por ID
-	public Usuario updateUsuario(Long id, Usuario usuarioDetails) {
+	/**
+	 * Metodo encargado de encontrar un usuario por correo
+	 * @param correo
+	 * @return
+	 */
+	public Usuario encontrarPorCorreo(String correo) {
+		try {
+		Util.ficheroLog("Entro en servicio encontrar por correo");
+		Usuario usuario;
+		usuario = usuarioRepository.findByCorreo(correo)  .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+		return usuario;}catch (Exception e) {
+			Util.ficheroLog("Ocurrio un error en encontrar por correo"+e.getMessage());
+		}
+		return null;
+		
+	}
+/**
+ * Metodo encargado de Actualizar un usuario existente por ID
+ * @param id
+ * @param usuarioDetails
+ * @return
+ */
+		public Usuario actualizarUsuario(Long id, Usuario usuarioDetails) {
 		
 	    // Buscar el usuario por ID, y lanzar excepción si no se encuentra
 		Usuario usuario;
 		usuario = usuarioRepository.findById(id)  .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 		try {
-		
+			Util.ficheroLog("Entro en servicio actualizar");
 			      
 
 			// Actualizar los campos del usuario con los detalles proporcionados
@@ -78,20 +122,29 @@ public class UsuarioService {
 
 			// Guardar los cambios en la base de datos
 		} catch (RuntimeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Util.ficheroLog("Ocurrio un error en servicio actualizar usuario:"+e.getMessage());
 		}
 	    return usuarioRepository.save(usuario);
 	}
 
 
-	// Eliminar un usuario por correo y contraseña
+/**
+ *  Metodo encargado de Eliminar un usuario por correo y contraseña
+ * @param correo
+ * @return
+ */
 	@Transactional
-	public Usuario deleteUsuario(String correo) {
-		Optional<Usuario> usuario = usuarioRepository.findByCorreo(correo);
-		if (usuario.isPresent()) {
-			usuarioRepository.delete(usuario.get());
-			return usuario.get();
+	public Usuario eliminarUsuario(String correo) {
+		try {
+			Util.ficheroLog("Entro en servicio eliminar");
+			Optional<Usuario> usuario = usuarioRepository.findByCorreo(correo);
+			if (usuario.isPresent()) {
+				usuarioRepository.delete(usuario.get());
+				return usuario.get();
+			}
+			return null;
+		} catch (Exception e) {
+			Util.ficheroLog("Ocurrio un error en servicio eliminar  usuario:"+e.getMessage());
 		}
 		return null;
 	}
